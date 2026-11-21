@@ -10447,24 +10447,49 @@ body.gfx-no-card-idle .sp-wheel-runes {
 .lb-tr b { display: block; font-family: var(--font-mono, monospace); font-size: 13.5px; color: #fde047; }
 .lb-tr small { font-size: 10.5px; color: #fb923c; }
 
-
 /* ==========================================================================
-   DCARD V72 — МОБІЛЬНИЙ ДОК НА 4 КАРТИ (CLASH ROYALE STYLE) + СИСТЕМА ЕМОЦІЙ
+   DCARD V73 — МОБІЛЬНИЙ ДОК НА 4 КАРТИ (2 ТАПИ БЕЗ ОБРІЗАННЯ),
+   ЧИСТИЙ TOPBAR БЕЗ ДУБЛІКАТІВ ТА КОМПАКТНА ПАНЕЛЬ ЕМОЦІЙ (ВАРІАНТ А)
    ========================================================================== */
 
+/* Ховаємо нижню плаваючу шестерню під час бою (немає дублікату кнопок) */
+body.in-battle #global-settings-fab {
+  display: none !important;
+}
+
 @media (max-width: 767px) {
+  /* Розвантажуємо верхню панель у бою: лишаємо DCARD + повну назву арени + кнопку Меню */
+  #topbar {
+    padding: calc(6px + env(safe-area-inset-top, 0px)) 10px 4px !important;
+    gap: 6px;
+  }
+  #topbar #top-codex,
+  #topbar #top-settings,
+  #topbar #btn-mute {
+    display: none !important;
+  }
+  #arena-pill {
+    max-width: calc(100vw - 122px) !important;
+    font-size: 10.5px !important;
+    padding: 3.5px 9px !important;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  /* Нижній док на 4 карти із верхнім запасом 26px, щоб піднята карта НЕ обрізалась */
   #hand {
     position: relative;
     display: flex !important;
     flex-wrap: nowrap;
-    align-items: center;
+    align-items: flex-end;
     justify-content: flex-start;
     gap: 6px;
     width: 100%;
     height: auto !important;
-    min-height: 132px;
-    margin-top: 0 !important;
-    padding: 10px 10px calc(10px + env(safe-area-inset-bottom, 0px)) !important;
+    min-height: 146px;
+    margin-top: -22px !important;
+    padding: 28px 10px calc(10px + env(safe-area-inset-bottom, 0px)) !important;
     overflow-x: auto;
     overflow-y: hidden;
     scroll-snap-type: x mandatory;
@@ -10473,6 +10498,22 @@ body.gfx-no-card-idle .sp-wheel-runes {
     touch-action: pan-x;
     -webkit-mask-image: none !important;
     mask-image: none !important;
+    background: none !important;
+    border-top: none !important;
+    box-shadow: none !important;
+  }
+  #hand::-webkit-scrollbar { display: none; }
+
+  /* Обсидіаново-золота підкладка доку починається нижче зони підйому карти */
+  #hand::before {
+    content: "";
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: calc(124px + env(safe-area-inset-bottom, 0px));
+    z-index: -1;
+    pointer-events: none;
     background:
       radial-gradient(ellipse 80% 45% at 50% 0%, rgba(212, 162, 74, 0.16), transparent 70%),
       linear-gradient(180deg, #171d2c 0%, #0b0f19 60%, #06080f 100%);
@@ -10481,7 +10522,6 @@ body.gfx-no-card-idle .sp-wheel-runes {
       0 -10px 26px rgba(0, 0, 0, 0.85),
       inset 0 1px 0 rgba(254, 240, 138, 0.28);
   }
-  #hand::-webkit-scrollbar { display: none; }
 
   #hand .card {
     position: relative !important;
@@ -10491,78 +10531,87 @@ body.gfx-no-card-idle .sp-wheel-runes {
     flex: 0 0 calc((100% - 18px) / 4);
     width: calc((100% - 18px) / 4) !important;
     min-width: 72px;
-    height: 112px !important;
+    height: 108px !important;
     scroll-snap-align: start;
-    transform: none !important;
+    transform: translateY(0) scale(1) !important;
     opacity: 1 !important;
-    transition: transform 0.15s ease, box-shadow 0.2s ease !important;
+    transition: transform 0.18s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.2s ease, border-color 0.2s ease !important;
   }
   #hand .card.gap { margin-left: 0 !important; }
-  #hand .card:active {
-    transform: translateY(-6px) scale(1.03) !important;
-    z-index: 20 !important;
+  #hand .card:hover {
+    transform: translateY(0) scale(1) !important;
+    z-index: 2 !important;
   }
-  #hand .card .ic { height: 40px; }
-  #hand .card .ic svg { width: 28px; height: 28px; }
-  #hand .card .v { font-size: 14px; }
-  #hand .card small { font-size: 8.5px; }
 
-  /* Піднімаємо кнопку налаштувань справа, щоб не заважала доку */
-  #global-settings-fab {
-    bottom: calc(144px + env(safe-area-inset-bottom, 0px)) !important;
+  /* 1-й тап: карта плавно спливає вверх і світиться золотом (без обрізання!) */
+  #hand .card.picked-card {
+    transform: translateY(-20px) scale(1.06) !important;
+    z-index: 35 !important;
+    border-color: #fde047 !important;
+    box-shadow:
+      0 14px 28px rgba(0, 0, 0, 0.92),
+      0 0 20px rgba(250, 204, 21, 0.65),
+      inset 0 1px 0 rgba(255, 255, 255, 0.45) !important;
   }
+
+  #hand .card .ic { height: 38px; }
+  #hand .card .ic svg { width: 26px; height: 26px; }
+  #hand .card .v { font-size: 13.5px; }
+  #hand .card small { font-size: 8.2px; }
 }
 
 /* Кнопка емоцій (зліва над панеллю карт) */
 #emote-fab {
   position: fixed;
-  left: calc(12px + env(safe-area-inset-left, 0px));
-  bottom: calc(144px + env(safe-area-inset-bottom, 0px));
+  left: calc(10px + env(safe-area-inset-left, 0px));
+  bottom: calc(134px + env(safe-area-inset-bottom, 0px));
   z-index: 45;
-  width: 44px;
-  height: 44px;
-  border-radius: 14px;
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
   display: none;
   align-items: center;
   justify-content: center;
   background: linear-gradient(180deg, rgba(28, 36, 56, 0.95), rgba(10, 14, 24, 0.98));
   border: 1.5px solid rgba(250, 204, 21, 0.55);
   color: #fef08a;
-  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.8), 0 0 12px rgba(250, 204, 21, 0.2);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.8), 0 0 10px rgba(250, 204, 21, 0.2);
   cursor: pointer;
-  transition: transform 0.16s ease, border-color 0.2s ease;
+  transition: transform 0.14s ease, border-color 0.2s ease;
 }
 #emote-fab.show { display: flex; }
-#emote-fab svg { width: 24px; height: 24px; }
+#emote-fab svg { width: 22px; height: 22px; }
 #emote-fab:active { transform: scale(0.92); }
 @media (min-width: 768px) {
   #emote-fab {
     left: 18px;
     bottom: 18px;
+    width: 44px;
+    height: 44px;
   }
 }
 
-/* Спливаюча панель емоцій */
+/* Компактна панель емоцій (Варіант А — не перекриває арену) */
 #emote-panel {
   position: fixed;
-  left: calc(12px + env(safe-area-inset-left, 0px));
-  bottom: calc(196px + env(safe-area-inset-bottom, 0px));
+  left: calc(10px + env(safe-area-inset-left, 0px));
+  bottom: calc(180px + env(safe-area-inset-bottom, 0px));
   z-index: 92;
-  width: min(296px, calc(100vw - 24px));
-  padding: 10px;
-  border-radius: 16px;
-  background: linear-gradient(180deg, rgba(20, 26, 42, 0.98), rgba(9, 13, 22, 0.99));
-  border: 1.5px solid rgba(250, 204, 21, 0.55);
-  box-shadow: 0 18px 42px rgba(0, 0, 0, 0.9), inset 0 1px 0 rgba(255, 255, 255, 0.14);
+  width: min(232px, calc(100vw - 24px));
+  padding: 7px 8px;
+  border-radius: 14px;
+  background: linear-gradient(180deg, rgba(18, 24, 38, 0.96), rgba(8, 11, 20, 0.98));
+  border: 1.5px solid rgba(250, 204, 21, 0.52);
+  box-shadow: 0 14px 34px rgba(0, 0, 0, 0.88), inset 0 1px 0 rgba(255, 255, 255, 0.12);
   display: none;
   flex-direction: column;
-  gap: 8px;
+  gap: 6px;
 }
 #emote-panel.open { display: flex; }
 @media (min-width: 768px) {
   #emote-panel {
     left: 18px;
-    bottom: 70px;
+    bottom: 68px;
   }
 }
 
@@ -10571,18 +10620,18 @@ body.gfx-no-card-idle .sp-wheel-runes {
   align-items: center;
   justify-content: space-between;
   font-family: var(--font-display);
-  font-size: 11px;
+  font-size: 9.5px;
   font-weight: 800;
   letter-spacing: 0.08em;
   color: #fde047;
-  padding: 0 2px 4px;
-  border-bottom: 1px solid rgba(212, 162, 74, 0.22);
+  padding: 0 2px 3px;
+  border-bottom: 1px solid rgba(212, 162, 74, 0.2);
 }
 #em-mute-btn {
   font-family: var(--font-ui);
-  font-size: 10px;
+  font-size: 9px;
   font-weight: 700;
-  padding: 3px 8px;
+  padding: 2px 7px;
   border-radius: 99px;
   background: rgba(255, 255, 255, 0.08);
   border: 1px solid rgba(212, 162, 74, 0.35);
@@ -10596,40 +10645,41 @@ body.gfx-no-card-idle .sp-wheel-runes {
 
 .em-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 6px;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 4px;
 }
 .em-btn {
-  height: 52px;
-  border-radius: 11px;
+  height: 34px;
+  border-radius: 50%;
   background: rgba(8, 12, 22, 0.9);
   border: 1px solid rgba(212, 162, 74, 0.25);
   display: flex;
   align-items: center;
   justify-content: center;
+  padding: 0;
   cursor: pointer;
-  transition: transform 0.14s ease, border-color 0.18s ease, background 0.18s ease;
+  transition: transform 0.12s ease, border-color 0.16s ease, background 0.16s ease;
 }
-.em-btn svg { width: 34px; height: 34px; }
-.em-btn:hover { border-color: #fde047; background: rgba(250, 204, 21, 0.12); }
-.em-btn:active { transform: scale(0.92); }
+.em-btn svg { width: 24px; height: 24px; }
+.em-btn:hover { border-color: #fde047; background: rgba(250, 204, 21, 0.14); }
+.em-btn:active { transform: scale(0.9); }
 
 .em-phrases {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 5px;
+  gap: 4px;
 }
 .em-phrase-btn {
-  padding: 7px 6px;
-  border-radius: 9px;
+  padding: 5px 4px;
+  border-radius: 7px;
   background: rgba(14, 20, 34, 0.92);
-  border: 1px solid rgba(212, 162, 74, 0.26);
+  border: 1px solid rgba(212, 162, 74, 0.24);
   color: #f3ead6;
   font-family: var(--font-ui);
-  font-size: 11px;
+  font-size: 10px;
   font-weight: 700;
   cursor: pointer;
-  transition: transform 0.12s ease, border-color 0.18s ease;
+  transition: transform 0.12s ease, border-color 0.16s ease;
 }
 .em-phrase-btn:hover { border-color: #fde047; color: #fffbeb; }
 .em-phrase-btn:active { transform: scale(0.95); }
@@ -10642,14 +10692,14 @@ body.gfx-no-card-idle .sp-wheel-runes {
   transform: translate(-50%, -100%);
   z-index: 30;
   pointer-events: none;
-  padding: 6px 10px;
-  border-radius: 14px;
+  padding: 5px 9px;
+  border-radius: 12px;
   background: linear-gradient(180deg, #1b2336, #0b0f19);
   border: 1.5px solid #fde047;
-  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.85), 0 0 14px rgba(250, 204, 21, 0.35);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.85), 0 0 12px rgba(250, 204, 21, 0.35);
   color: #fffbeb;
   font-family: var(--font-ui);
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 800;
   white-space: nowrap;
   display: flex;
@@ -10658,12 +10708,12 @@ body.gfx-no-card-idle .sp-wheel-runes {
   animation: emotePopIn 2.2s cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
 .emote-bubble.is-svg {
-  padding: 6px;
+  padding: 5px;
   border-radius: 50%;
-  width: 54px;
-  height: 54px;
+  width: 46px;
+  height: 46px;
 }
-.emote-bubble.is-svg svg { width: 38px; height: 38px; }
+.emote-bubble.is-svg svg { width: 32px; height: 32px; }
 @keyframes emotePopIn {
   0% { opacity: 0; transform: translate(-50%, -70%) scale(0.4); }
   14% { opacity: 1; transform: translate(-50%, -106%) scale(1.12); }
