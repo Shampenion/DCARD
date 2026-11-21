@@ -2,13 +2,13 @@
 <html lang="uk">
 <head>
   <meta charset="utf-8">
-  <title>DCARD — Дуель Артефактів (V71)</title>
+  <title>DCARD — Дуель Артефактів (V72)</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700;1,600&family=Manrope:wght@500;600;700;800&family=JetBrains+Mono:wght@600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/main.css?v=71">
-  <link rel="stylesheet" href="css/arenas.css?v=71">
+  <link rel="stylesheet" href="css/main.css?v=72">
+  <link rel="stylesheet" href="css/arenas.css?v=72">
 </head>
 <body>
 
@@ -65,6 +65,25 @@
   </button>
 </div>
 <div id="log"></div>
+<!-- КНОПКА ТА ПАНЕЛЬ ЕМОЦІЙ (DCARD V72) -->
+<button type="button" id="emote-fab" title="Емоції та фрази" aria-label="Емоції">
+  <svg viewBox="0 0 24 24" aria-hidden="true">
+    <path d="M4 5.5A2.5 2.5 0 0 1 6.5 3h11A2.5 2.5 0 0 1 20 5.5v8A2.5 2.5 0 0 1 17.5 16H9.8L5.5 20.2c-.6.6-1.5.2-1.5-.7V5.5z" fill="currentColor" fill-opacity="0.16" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"/>
+    <circle cx="8.5" cy="9.5" r="1.4" fill="currentColor"/>
+    <circle cx="12" cy="9.5" r="1.4" fill="currentColor"/>
+    <circle cx="15.5" cy="9.5" r="1.4" fill="currentColor"/>
+  </svg>
+</button>
+
+<div id="emote-panel" aria-hidden="true">
+  <div class="em-head">
+    <span>ЕМОЦІЇ ТА ФРАЗИ</span>
+    <button type="button" id="em-mute-btn" title="Вимкнути емоції ботів">Боти: ВКЛ</button>
+  </div>
+  <div class="em-grid" id="em-svg-grid"></div>
+  <div class="em-phrases" id="em-phrases-grid"></div>
+</div>
+
 <div id="hand" class="off"></div>
 <div id="fl"></div>
 <div class="lb t"></div>
@@ -351,13 +370,13 @@
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-database-compat.js"></script>
-<script src="js/firebase-config.js?v=71"></script>
-<script src="js/data.js?v=71"></script>
-<script src="js/icons.js?v=71"></script>
-<script src="js/audio.js?v=71"></script>
-<script src="js/fx.js?v=71"></script>
-<script src="js/cloud.js?v=71"></script>
-<script src="js/net.js?v=71"></script>
-<script src="js/engine.js?v=71"></script>
+<script src="js/firebase-config.js?v=72"></script>
+<script src="js/data.js?v=72"></script>
+<script src="js/icons.js?v=72"></script>
+<script src="js/audio.js?v=72"></script>
+<script src="js/fx.js?v=72"></script>
+<script src="js/cloud.js?v=72"></script>
+<script src="js/net.js?v=72"></script>
+<script src="js/engine.js?v=72"></script>
 </body>
 </html>

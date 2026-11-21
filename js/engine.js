@@ -4582,31 +4582,16 @@ function layoutWheel(h) {
  return;
  }
 
- // На телефоні (<768px): інтерактивне дугове віяло з прокруткою
- if (h._sel === undefined) h._sel = (n - 1) / 2;
- h._sel = Math.max(-0.4, Math.min(n - 0.6, h._sel));
-
- const vw = innerWidth || 360;
- const baseStep = Math.max(36, Math.min(48, (vw - 88) / Math.max(5, Math.min(n, 8))));
- const activeIdx = Math.round(Math.max(0, Math.min(n - 1, h._sel)));
-
+ // На телефоні (<768px): чистий 4-слотовий док зі свайпом (без віяла)
  cards.forEach((el, i) => {
- const diff = i - h._sel;
- const absD = Math.abs(diff);
- const push = Math.sign(diff) * Math.min(1, absD) * 8;
- const x = diff * baseStep + push;
- const y = Math.pow(absD, 1.48) * 3.4 - (absD < 0.5 ? (1 - absD * 2) * 10 : 0);
- const rot = Math.max(-22, Math.min(22, diff * 4.2));
- const sc = 0.92 + 0.22 * Math.exp(-absD * absD * 1.35);
-
- el.classList.toggle("active-fan", i === activeIdx && absD < 0.45);
- el.style.setProperty("--wx", x.toFixed(1) + "px");
- el.style.setProperty("--wy", y.toFixed(1) + "px");
- el.style.setProperty("--wr", rot.toFixed(2) + "deg");
- el.style.setProperty("--ws", sc.toFixed(3));
- el.style.zIndex = String(120 - Math.round(absD * 10));
- el.style.opacity = absD > 5.8 ? "0.45" : "1";
- el.style.pointerEvents = "";
+  el.classList.remove("active-fan");
+  el.style.removeProperty("--wx");
+  el.style.removeProperty("--wy");
+  el.style.removeProperty("--wr");
+  el.style.removeProperty("--ws");
+  el.style.zIndex = String(i + 1);
+  el.style.opacity = "1";
+  el.style.pointerEvents = "";
  });
 }
 
@@ -4642,15 +4627,7 @@ function renderHand() {
  e.onpointerup = e.onpointercancel = e.onpointerleave = () => { clearTimeout(tm); hideTip(); clearGhosts(); };
  e.onclick = () => {
  if (lp) { lp = 0; return; }
- // На телефоні: перший тап по боковій карті підтягує її в центр, другий — грає. На ПК граємо одразу!
- if (!isDesktopHand()) {
- const distFromSel = Math.abs((h._sel ?? i) - i);
- if (distFromSel > 0.55) {
- snapWheel(h, i);
- previewCard(c);
- return;
- }
- }
+ // На телефоні в 4-слотовому доку граємо одразу з першого тапу
  if (REFORGE_MODE && res) {
   if (c.pz > 0 || isSp(c.t)) { shake(e); pop(0, "НЕ МОЖНА ПЕРЕКУВАТИ", "#fb923c"); snd("stun"); return; }
   executeReforge(0, i);
@@ -6833,3 +6810,122 @@ function tourScreen() {
    bindDraftEvents(false);
  }
 }
+
+
+// ===== СИСТЕМА ЕМОЦІЙ ТА ФРАЗ (DCARD V72) =====
+const EMOTES_DATA = [
+  { id: "laugh", label: "Ха-ха!", sfx: "coins", svg: `<svg viewBox="0 0 36 36"><circle cx="18" cy="18" r="15" fill="#facc15" stroke="#fef08a" stroke-width="1.6"/><path d="M10 14l3.5-2.2L15 14M26 14l-3.5-2.2L21 14" fill="none" stroke="#1e293b" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M10 20c1.5 6 14.5 6 16 0z" fill="#7f1d1d" stroke="#1e293b" stroke-width="1.4"/><path d="M13 24c2-1.6 8-1.6 10 0" fill="#fb7185"/><circle cx="7.5" cy="18" r="2.2" fill="#38bdf8"/><circle cx="28.5" cy="18" r="2.2" fill="#38bdf8"/></svg>` },
+  { id: "angry", label: "Злість", sfx: "thud", svg: `<svg viewBox="0 0 36 36"><circle cx="18" cy="18" r="15" fill="#ef4444" stroke="#fca5a5" stroke-width="1.6"/><path d="M10 12l6 3M26 12l-6 3" stroke="#1e293b" stroke-width="2.4" stroke-linecap="round"/><circle cx="13" cy="17.5" r="2" fill="#1e293b"/><circle cx="23" cy="17.5" r="2" fill="#1e293b"/><path d="M12 25c2.5-3 9.5-3 12 0" fill="none" stroke="#1e293b" stroke-width="2.2" stroke-linecap="round"/></svg>` },
+  { id: "cry", label: "Біль", sfx: "ice", svg: `<svg viewBox="0 0 36 36"><circle cx="18" cy="18" r="15" fill="#38bdf8" stroke="#bae6fd" stroke-width="1.6"/><path d="M11 14c1.2-1 2.8-1 4 0M21 14c1.2-1 2.8-1 4 0" fill="none" stroke="#0f172a" stroke-width="2" stroke-linecap="round"/><path d="M11.5 16v9M24.5 16v9" stroke="#e0f2fe" stroke-width="3" stroke-linecap="round"/><path d="M13 25c2-2.5 8-2.5 10 0" fill="none" stroke="#0f172a" stroke-width="2.2" stroke-linecap="round"/></svg>` },
+  { id: "thumb", label: "Гарна гра!", sfx: "heal", svg: `<svg viewBox="0 0 36 36"><circle cx="18" cy="18" r="15" fill="#10b981" stroke="#a7f3d0" stroke-width="1.6"/><path d="M13 18v9H9v-9h4zm2 0l3.5-7.5c1-1.5 3-1 3 1V16h4.5c1.5 0 2.5 1.3 2.2 2.8l-1.2 6c-.3 1.3-1.4 2.2-2.7 2.2H15v-9z" fill="#fef08a" stroke="#064e3b" stroke-width="1.3" stroke-linejoin="round"/></svg>` },
+  { id: "shock", label: "Ого!", sfx: "swap", svg: `<svg viewBox="0 0 36 36"><circle cx="18" cy="18" r="15" fill="#f59e0b" stroke="#fde68a" stroke-width="1.6"/><circle cx="12.5" cy="15" r="3" fill="#fff" stroke="#1e293b" stroke-width="1.2"/><circle cx="12.5" cy="15" r="1.2" fill="#0f172a"/><circle cx="23.5" cy="15" r="3" fill="#fff" stroke="#1e293b" stroke-width="1.2"/><circle cx="23.5" cy="15" r="1.2" fill="#0f172a"/><ellipse cx="18" cy="24.5" rx="3.4" ry="4.4" fill="#1e293b"/></svg>` },
+  { id: "skull", label: "GG", sfx: "shatter", svg: `<svg viewBox="0 0 36 36"><circle cx="18" cy="18" r="15" fill="#334155" stroke="#cbd5e1" stroke-width="1.6"/><path d="M18 7a8.5 8.5 0 0 0-8.5 8.5c0 3 1.5 5.4 3.8 6.8V26h9.4v-3.7A8.5 8.5 0 0 0 26.5 15.5 8.5 8.5 0 0 0 18 7z" fill="#f8fafc"/><circle cx="14.5" cy="16" r="2.2" fill="#0f172a"/><circle cx="21.5" cy="16" r="2.2" fill="#0f172a"/><path d="M15.5 23v3M18 23v3M20.5 23v3" stroke="#0f172a" stroke-width="1.4"/></svg>` }
+];
+
+const EMOTE_PHRASES = ["Ха-ха!", "Гарна гра!", "Ой...", "Тобі кінець!", "Пощастило!", "Дякую!"];
+let EMOTES_MUTED = false;
+let _lastEmoteAt = 0;
+
+function showEmoteBubble(pIdx, content, isSvg = false, sfxName = "swap") {
+  if (EMOTES_MUTED && pIdx !== 0) return;
+  const seat = $("p" + pIdx);
+  if (!seat) return;
+  seat.querySelectorAll(".emote-bubble").forEach(b => b.remove());
+  const b = document.createElement("div");
+  b.className = "emote-bubble" + (isSvg ? " is-svg" : "");
+  if (isSvg) b.innerHTML = content;
+  else b.textContent = content;
+  seat.appendChild(b);
+  if (sfxName) snd(sfxName);
+  setTimeout(() => b.remove(), 2250);
+}
+
+function triggerBotEmoteReply() {
+  if (EMOTES_MUTED || !P || P.length < 2) return;
+  const liveBots = P.map((p, i) => (i > 0 && p.alive) ? i : -1).filter(i => i >= 0);
+  if (!liveBots.length || Math.random() > 0.55) return;
+  const botIdx = liveBots[rnd(liveBots.length)];
+  setTimeout(() => {
+    if (!P[botIdx] || !P[botIdx].alive) return;
+    if (Math.random() < 0.65) {
+      const em = EMOTES_DATA[rnd(EMOTES_DATA.length)];
+      showEmoteBubble(botIdx, em.svg, true, em.sfx);
+    } else {
+      const ph = EMOTE_PHRASES[rnd(EMOTE_PHRASES.length)];
+      showEmoteBubble(botIdx, ph, false, "throw");
+    }
+  }, 650 + rnd(600));
+}
+
+(function initEmoteUI() {
+  const fab = $("emote-fab");
+  const panel = $("emote-panel");
+  const svgGrid = $("em-svg-grid");
+  const phrGrid = $("em-phrases-grid");
+  const muteBtn = $("em-mute-btn");
+  if (!fab || !panel || !svgGrid || !phrGrid) return;
+
+  svgGrid.innerHTML = EMOTES_DATA.map(em =>
+    `<button type="button" class="em-btn" data-em-id="${em.id}" title="${em.label}">${em.svg}</button>`
+  ).join("");
+
+  phrGrid.innerHTML = EMOTE_PHRASES.map(ph =>
+    `<button type="button" class="em-phrase-btn" data-em-ph="${ph}">${ph}</button>`
+  ).join("");
+
+  fab.onclick = (ev) => {
+    ev.stopPropagation();
+    const open = panel.classList.toggle("open");
+    panel.setAttribute("aria-hidden", open ? "false" : "true");
+    snd("throw");
+  };
+
+  if (muteBtn) {
+    muteBtn.onclick = (ev) => {
+      ev.stopPropagation();
+      EMOTES_MUTED = !EMOTES_MUTED;
+      muteBtn.classList.toggle("muted", EMOTES_MUTED);
+      muteBtn.textContent = EMOTES_MUTED ? "Боти: ВИМК" : "Боти: ВКЛ";
+      snd("throw");
+    };
+  }
+
+  svgGrid.onclick = (ev) => {
+    const btn = ev.target.closest("[data-em-id]");
+    if (!btn) return;
+    const now = Date.now();
+    if (now - _lastEmoteAt < 1200) return;
+    _lastEmoteAt = now;
+    const em = EMOTES_DATA.find(x => x.id === btn.dataset.emId);
+    if (!em) return;
+    panel.classList.remove("open");
+    showEmoteBubble(0, em.svg, true, em.sfx);
+    triggerBotEmoteReply();
+  };
+
+  phrGrid.onclick = (ev) => {
+    const btn = ev.target.closest("[data-em-ph]");
+    if (!btn) return;
+    const now = Date.now();
+    if (now - _lastEmoteAt < 1200) return;
+    _lastEmoteAt = now;
+    panel.classList.remove("open");
+    showEmoteBubble(0, btn.dataset.emPh, false, "swap");
+    triggerBotEmoteReply();
+  };
+
+  document.addEventListener("click", (ev) => {
+    if (panel.classList.contains("open") && !panel.contains(ev.target) && ev.target !== fab && !fab.contains(ev.target)) {
+      panel.classList.remove("open");
+      panel.setAttribute("aria-hidden", "true");
+    }
+  });
+
+  // Автоматично показуємо кнопку емоцій під час бою і ховаємо в головному меню
+  setInterval(() => {
+    const inMenu = $("ov") && $("ov").style.display !== "none";
+    const inGame = P && P.length > 0 && !inMenu;
+    fab.classList.toggle("show", !!inGame);
+    if (!inGame) panel.classList.remove("open");
+  }, 300);
+})();
