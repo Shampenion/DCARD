@@ -4493,6 +4493,7 @@ function statusInfo(i, k) {
 }
 
 function initWheel(h) {
+ if (window.innerWidth <= 767) return;
  if (h.dataset.wheel) return;
  h.dataset.wheel = "1";
  let down = false, dragged = false, sx = 0, sy = 0, s0 = 0, pid = null, lastX = 0, lastT = 0, vel = 0, flickUpCard = null;
@@ -4602,52 +4603,82 @@ function snapWheel(h, to) {
  layoutWheel(h);
 }
 
+let _pickedCardIdx = -1;
+
 function renderHand() {
  clearGhosts();
  const h = $("hand");
  h.innerHTML = "";
+ _pickedCardIdx = -1;
  if (!P[0] || (P[0].tourIdx ?? 0) !== 0) { h.style.display = "none"; return; }
  h.style.display = "";
  const total = P[0].hand.length;
  if (h._sel === undefined || total >= 10) {
- h._sel = (total - 1) / 2;
+  h._sel = (total - 1) / 2;
  } else {
- h._sel = Math.max(0, Math.min(Math.max(0, total - 1), Math.round(h._sel)));
+  h._sel = Math.max(0, Math.min(Math.max(0, total - 1), Math.round(h._sel)));
  }
+
+ const isMobile = () => window.innerWidth <= 767;
+
  P[0].hand.forEach((c, i) => {
- const e = cardEl(c, 0), grp = t => "dpkboavqyjlDACSPWGLEIJMOQRUVXYZ790αβγδεζηθικλμνξω".includes(t) ? 0 : "hgrtnHFBKT1234568πρστυφχψΓΔΦΩ".includes(t) ? 1 : 2;
- if (i && grp(c.t) !== grp(P[0].hand[i - 1].t)) e.classList.add("gap");
- e.style.zIndex = String(i + 1);
- if (P[0].frost && isSp(c.t)) { e.classList.add("frz"); e.insertAdjacentHTML("beforeend", `<u class="frzov">${UI_IC.snow}</u>`); }
- e.onpointerenter = () => previewCard(c);
- let lp = 0, tm = 0, sx = 0, sy = 0;
- e.oncontextmenu = ev => ev.preventDefault();
- e.onpointerdown = ev => { lp = 0; sx = ev.clientX; sy = ev.clientY; tm = setTimeout(() => { lp = 1; showTip(c, e); }, 420); };
- e.onpointermove = ev => { if (Math.hypot(ev.clientX - sx, ev.clientY - sy) > 10) { clearTimeout(tm); hideTip(); } };
- e.onpointerup = e.onpointercancel = e.onpointerleave = () => { clearTimeout(tm); hideTip(); clearGhosts(); };
- e.onclick = () => {
- if (lp) { lp = 0; return; }
- // На телефоні в 4-слотовому доку граємо одразу з першого тапу
- if (REFORGE_MODE && res) {
-  if (c.pz > 0 || isSp(c.t)) { shake(e); pop(0, "НЕ МОЖНА ПЕРЕКУВАТИ", "#fb923c"); snd("stun"); return; }
-  executeReforge(0, i);
-  return;
- }
- if (c.pz > 0) { shake(e); pop(0, "СКАМ'ЯНІННЯ", "#94a3b8"); snd("stun"); return; }
- if (res && P[0].frost && isSp(c.t) && P[0].hand.some(x => !isSp(x.t))) { shake(e); pop(0, "ЗАМОРОЖЕНО", "#7dd3fc"); snd("shatter"); return; }
- clearGhosts();
- if (res) {
- const r = res;
- res = null;
- h.className = "off";
- r(i);
- }
- };
- h.appendChild(e);
+  const e = cardEl(c, 0), grp = t => "dpkboavqyjlDACSPWGLEIJMOQRUVXYZ790αβγδεζηθικλμνξω".includes(t) ? 0 : "hgrtnHFBKT1234568πρστυφχψΓΔΦΩ".includes(t) ? 1 : 2;
+  if (i && grp(c.t) !== grp(P[0].hand[i - 1].t)) e.classList.add("gap");
+  e.style.zIndex = String(i + 1);
+  if (P[0].frost && isSp(c.t)) { e.classList.add("frz"); e.insertAdjacentHTML("beforeend", `<u class="frzov">${UI_IC.snow}</u>`); }
+  e.onpointerenter = () => { if (!isMobile()) previewCard(c); };
+  let lp = 0, tm = 0, sx = 0, sy = 0;
+  e.oncontextmenu = ev => ev.preventDefault();
+  e.onpointerdown = ev => { lp = 0; sx = ev.clientX; sy = ev.clientY; tm = setTimeout(() => { lp = 1; showTip(c, e); }, 420); };
+  e.onpointermove = ev => { if (Math.hypot(ev.clientX - sx, ev.clientY - sy) > 10) { clearTimeout(tm); hideTip(); } };
+  e.onpointerup = e.onpointercancel = e.onpointerleave = () => { clearTimeout(tm); hideTip(); if (!isMobile()) clearGhosts(); };
+  e.onclick = ev => {
+   ev.stopPropagation();
+   if (lp) { lp = 0; return; }
+   if (REFORGE_MODE && res) {
+    if (c.pz > 0 || isSp(c.t)) { shake(e); pop(0, "НЕ МОЖНА ПЕРЕКУВАТИ", "#fb923c"); snd("stun"); return; }
+    executeReforge(0, i);
+    return;
+   }
+   if (c.pz > 0) { shake(e); pop(0, "СКАМ'ЯНІННЯ", "#94a3b8"); snd("stun"); return; }
+   if (res && P[0].frost && isSp(c.t) && P[0].hand.some(x => !isSp(x.t))) { shake(e); pop(0, "ЗАМОРОЖЕНО", "#7dd3fc"); snd("shatter"); return; }
+
+   if (isMobile() && res) {
+    if (_pickedCardIdx !== i) {
+     Array.from(h.children).forEach(el => el.classList.remove("picked-card"));
+     _pickedCardIdx = i;
+     e.classList.add("picked-card");
+     previewCard(c);
+     snd("throw");
+     return;
+    }
+   }
+
+   _pickedCardIdx = -1;
+   clearGhosts();
+   if (res) {
+    const r = res;
+    res = null;
+    h.className = "off";
+    r(i);
+   }
+  };
+  h.appendChild(e);
  });
+
+ if (!h.dataset.outsideClear) {
+  h.dataset.outsideClear = "1";
+  document.addEventListener("click", ev => {
+   if (_pickedCardIdx !== -1 && !ev.target.closest("#hand .card")) {
+    _pickedCardIdx = -1;
+    Array.from(h.children).forEach(el => el.classList.remove("picked-card"));
+    clearGhosts();
+   }
+  });
+ }
+
  layoutWheel(h);
 }
-
 
 function bot(p, seen) {
  if (CUR_ARENA && CUR_ARENA.id === "forge" && (P[p].reforgeLeft || 0) > 0) {

@@ -1861,7 +1861,7 @@ function hit(y, v) {
  }
 }
 
-const getTcOff = () => (innerWidth < 520 ? 48 : 68);
+const getTcOff = () => (innerWidth < 520 ? 42 : 68);
 function throwCard(p, c, slot, hid) {
  const tcOff = getTcOff();
  const w = document.createElement("div");
