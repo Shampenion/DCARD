@@ -1,8 +1,8 @@
 // ==========================================
 
-// DCARD V28 — ВІЗУАЛЬНІ ЕФЕКТИ ТА АНІМАЦІЇ (js/fx.js)
+// DCARD V75 — ВІЗУАЛЬНІ ЕФЕКТИ ТА АНІМАЦІЇ (js/fx.js)
 
-// Кінематографічні сцени карт, аури, спалахи, шлейфи та підказки
+// Оптимізовані сцени карт, аури, спалахи, шлейфи та підказки без фонових витоків
 
 // ==========================================
 
@@ -19,7 +19,6 @@ async function altarAwakeningIntro(myGame) {
 
  if (bannerEl) bannerEl.innerHTML = `<span class="pill" style="border-color:#d4a24a;color:#ffe9a0;letter-spacing:1.4px">${UI_IC.diamond} ПРОБУДЖЕННЯ ВІВТАРЯ ${UI_IC.diamond}</span>`;
 
- // 1. Пробудження кам'яного вівтаря та спалах рунічного кільця (0.0 – 0.50 с)
  const stRect = $("stage").getBoundingClientRect();
  const cx = stRect.left + stRect.width / 2;
  const cy = stRect.top + stRect.height / 2;
@@ -43,7 +42,6 @@ async function altarAwakeningIntro(myGame) {
  await sl(260);
  if (myGame !== gameId) return;
 
- // 2. Почергова поява геральдичних плашок гравців по колу + заповнення HP 0 -> 100 (0.26 – 0.82 с)
  const seatAnims = seats.map((s, idx) => new Promise(res => {
  setTimeout(() => {
  if (myGame !== gameId) { res(); return; }
@@ -71,7 +69,6 @@ async function altarAwakeningIntro(myGame) {
  await Promise.all([tblAnim, ringAnim, ...seatAnims]);
  if (myGame !== gameId) return;
 
- // Очищаємо інлайн-стилі та WAAPI вівтаря й кільця, щоб працювали нескінченні CSS-анімації столу та стрілок
  if (tbl) { tbl.getAnimations?.().forEach(a => a.cancel()); tbl.style.opacity = ""; tbl.style.transform = ""; }
  if (ringSvg) { ringSvg.getAnimations?.().forEach(a => a.cancel()); ringSvg.style.opacity = ""; ringSvg.style.transform = ""; }
  seats.forEach(s => {
@@ -84,9 +81,7 @@ async function altarAwakeningIntro(myGame) {
  }
  });
 
- // 3. Роздача карт із центру вівтаря суперникам та розкриття віяла твоєї руки (0.82 – 1.48 с)
  snd("throw");
- // Сорочки летять від центру вівтаря до кожного бота
  P.forEach((p, idx) => {
  if (idx === 0) return;
  const D = seatC(idx);
@@ -104,7 +99,6 @@ async function altarAwakeningIntro(myGame) {
  }
  });
 
- // Твої 10 карт вилітають з центру вівтаря вниз у руку та пробігають золотим відблиском
  const cardAnims = handCards.map((c, idx) => new Promise(res => {
  setTimeout(() => {
  if (myGame !== gameId) { res(); return; }
@@ -146,7 +140,6 @@ function initArenaBg() {
  const bg = $("arena-bg");
  if (!bg || bg.dataset.ready) return;
  bg.dataset.ready = "1";
- // Тундра + завірюха зі сніжинок
  let snowHtml = "";
  const flakeSvg = `<svg viewBox="0 0 24 24" width="100%" height="100%"><g stroke="#e0f2fe" stroke-width="1.8" stroke-linecap="round"><path d="M12 2v20M3.5 7l17 10M20.5 7l-17 10"/><circle cx="12" cy="12" r="2.2" fill="#fff" stroke="none"/></g></svg>`;
  for (let i = 0; i < 36; i++) {
@@ -164,7 +157,6 @@ function initArenaBg() {
  <path d="M0 320 L0 265 Q300 242 600 268 T1200 258 L1200 320 Z" fill="#1b4d72"/>
  </svg>`;
 
- // Мішаний ліс (ялинки + листяні крони) + бірюзовий туман + напівпрозорі знаки питання
  let qHtml = "";
  for (let i = 0; i < 20; i++) {
  const left = (4 + Math.random() * 92).toFixed(1);
@@ -177,12 +169,10 @@ function initArenaBg() {
  }
  const forestSvg = `<svg class="forest-silhouette" viewBox="0 0 1200 360" preserveAspectRatio="none">
  <g fill="#062221">
- <!-- Ялинки -->
  <polygon points="70,360 115,150 160,360"/><polygon points="82,270 115,120 148,270"/>
  <polygon points="270,360 325,125 380,360"/><polygon points="285,250 325,95 365,250"/>
  <polygon points="830,360 885,130 940,360"/><polygon points="845,255 885,100 925,255"/>
  <polygon points="1040,360 1095,145 1150,360"/><polygon points="1055,265 1095,115 1135,265"/>
- <!-- Листяні дерева -->
  <rect x="192" y="235" width="12" height="125"/><circle cx="198" cy="210" r="46"/><circle cx="172" cy="226" r="34"/><circle cx="224" cy="224" r="36"/>
  <rect x="445" y="245" width="14" height="115"/><circle cx="452" cy="215" r="52"/><circle cx="420" cy="232" r="38"/><circle cx="482" cy="230" r="40"/>
  <rect x="725" y="240" width="14" height="120"/><circle cx="732" cy="212" r="50"/><circle cx="702" cy="228" r="36"/><circle cx="762" cy="228" r="38"/>
@@ -191,7 +181,6 @@ function initArenaBg() {
  <path d="M0 360 L0 315 Q300 295 600 318 T1200 310 L1200 360 Z" fill="#041716"/>
  </svg>`;
 
- // Болото Гідри: силуети очерету/коріння + болотяний туман + світлячки + отруйні бульбашки
  let fireflyHtml = "";
  for (let i = 0; i < 26; i++) {
  const left = (4 + Math.random() * 92).toFixed(1);
@@ -221,7 +210,6 @@ function initArenaBg() {
  </g>
  </svg>`;
 
- // Кривавий Колізей: античні колони, арки та кружляючі червоні пелюстки/іскри
  let petalHtml = "";
  for (let i = 0; i < 30; i++) {
  const left = (Math.random() * 102 - 1).toFixed(1);
@@ -244,7 +232,6 @@ function initArenaBg() {
  <rect x="30" y="615" width="68" height="24" rx="3"/>
  <rect x="132" y="120" width="36" height="500" rx="4" opacity="0.72"/>
  <rect x="122" y="106" width="56" height="17" rx="3" opacity="0.72"/>
-
  <rect x="1114" y="80" width="44" height="540" rx="4"/>
  <rect x="1102" y="65" width="68" height="20" rx="3"/>
  <rect x="1102" y="615" width="68" height="24" rx="3"/>
@@ -260,8 +247,6 @@ function initArenaBg() {
  </g>
  </svg>`;
 
-
- // Дзеркальна арена: парячі кришталеві уламки з відблисками рун
  const shardShapes = [
  "12,2 28,8 22,30 4,22",
  "16,2 30,14 18,32 4,18",
@@ -286,7 +271,6 @@ function initArenaBg() {
  mshardHtml += `<span class="ar-mshard" style="left:${left}%;top:${top}%;width:${sz}px;height:${sz}px;--dur:${dur}s;--del:${del}s;--dx:${dx}px;--dy:${dy}px;--r0:${r0}deg;--r1:${r1}deg;--op:${op}"><svg viewBox="0 0 32 32" width="100%" height="100%"><polygon points="${poly}" fill="rgba(203,213,225,0.18)" stroke="#f8fafc" stroke-width="1.2"/><line x1="8" y1="8" x2="22" y2="22" stroke="rgba(255,255,255,0.65)" stroke-width="1"/><path d="${rg}" fill="none" stroke="#93c5fd" stroke-width="1.2" stroke-linecap="round" opacity="0.85"/></svg></span>`;
  }
 
- // Кузня Гефеста: вугільне горнило + висхідні розпечені іскри жару
  let emberHtml = "";
  for (let i = 0; i < 34; i++) {
   const left = (2 + Math.random() * 96).toFixed(1);
@@ -298,7 +282,6 @@ function initArenaBg() {
   emberHtml += `<span class="ar-ember" style="left:${left}%;width:${sz}px;height:${sz}px;--dur:${dur}s;--del:${del}s;--drift:${drift}px;--op:${op}"></span>`;
  }
 
- // Храм Світил: Денні сонячні промені/пилинки + Нічні зорі/туман
  let sunDustHtml = "";
  for (let i = 0; i < 24; i++) {
   const left = (4 + Math.random() * 92).toFixed(1);
@@ -320,8 +303,6 @@ function initArenaBg() {
   starHtml += `<span class="ar-star" style="left:${left}%;top:${top}%;width:${sz}px;height:${sz}px;--dur:${dur}s;--del:${del}s"></span>`;
  }
 
-
- // Астральний вимір: космічна туманність та різнокольорові зірки веселки
  const astCols = ["#34d399", "#38bdf8", "#c084fc", "#fb7185", "#fde047"];
  let astStarHtml = "";
  for (let i = 0; i < 42; i++) {
@@ -334,7 +315,6 @@ function initArenaBg() {
   astStarHtml += `<span class="ar-ast-star" style="left:${left}%;top:${top}%;width:${sz}px;height:${sz}px;--dur:${dur}s;--del:${del}s;--sc:${sc}"></span>`;
  }
 
- // Пантеон Титанів: античні золоті колони, небесні промені світла, золоті іскри та пір'їни
  const pantheonSvg = `<svg class="pantheon-bg" viewBox="0 0 1200 700" preserveAspectRatio="none">
   <defs>
    <linearGradient id="panColG" x1="0" y1="0" x2="1" y2="0">
@@ -470,8 +450,6 @@ function orb(x, y, col) {
  ], { duration: 400, easing: "ease-in" }).finished.then(() => o.remove()).catch(() => o.remove());
 }
 
-// УНІКАЛЬНІ АНІМАЦІЇ ДЛЯ ВСІХ СПЕЦКАРТ
-
 function ultFx(type) {
  const data = ULT_DATA[type];
  if (!data) return Promise.resolve();
@@ -491,8 +469,6 @@ function ultFx(type) {
  ], { duration: 1100, easing: "ease-out" }).finished.then(() => d.remove()).catch(() => d.remove());
 }
 
-
-// ===== САТАНЯ: ЗАСІДКА, УКУС, ВАМПІРИЗМ (ultFx("v")) =====
 const SAT_JAW_TOP = `<svg viewBox="0 0 200 120" width="100%" height="100%" style="overflow:visible;display:block"><defs><linearGradient id="vFangGrad" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#fda4af" stop-opacity="0.9"/><stop offset="35%" stop-color="#f43f5e" stop-opacity="0.6"/><stop offset="100%" stop-color="#881337" stop-opacity="0.85"/></linearGradient><filter id="neonRedGlow" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="3" result="glow"/><feMerge><feMergeNode in="glow"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs><g filter="url(#neonRedGlow)" stroke="#ff2a55" stroke-width="1.8" stroke-linejoin="round"><path d="M 28 20 C 26 50 32 80 44 110 C 47 75 52 50 56 25 Z" fill="url(#vFangGrad)"/><path d="M 58 24 C 60 48 76 48 78 24 Z" fill="url(#vFangGrad)"/><path d="M 80 23 C 82 50 98 50 100 23 Z" fill="url(#vFangGrad)"/><path d="M 102 23 C 104 50 120 50 122 23 Z" fill="url(#vFangGrad)"/><path d="M 124 24 C 126 48 142 48 144 24 Z" fill="url(#vFangGrad)"/><path d="M 146 25 C 150 50 155 75 158 110 C 170 80 176 50 174 20 Z" fill="url(#vFangGrad)"/><path d="M 44 110 Q 42 125 45 132 Q 47 125 45 112" fill="#ef4444" stroke="#dc2626" stroke-width="1"/><path d="M 158 110 Q 160 128 157 135 Q 155 127 157 112" fill="#ef4444" stroke="#dc2626" stroke-width="1"/></g></svg>`;
 const SAT_JAW_BOT = `<svg viewBox="0 0 180 100" width="100%" height="100%" style="overflow:visible;display:block"><g filter="url(#neonRedGlow)" stroke="#ff2a55" stroke-width="1.8" stroke-linejoin="round"><path d="M 26 80 C 30 55 35 35 40 10 C 44 35 48 55 52 80 Z" fill="url(#vFangGrad)"/><path d="M 54 78 C 56 60 70 60 72 78 Z" fill="url(#vFangGrad)"/><path d="M 74 77 C 76 58 88 58 90 77 Z" fill="url(#vFangGrad)"/><path d="M 92 77 C 94 58 106 58 108 77 Z" fill="url(#vFangGrad)"/><path d="M 110 78 C 112 60 126 60 128 78 Z" fill="url(#vFangGrad)"/><path d="M 130 80 C 134 55 138 35 142 10 C 147 35 152 55 156 80 Z" fill="url(#vFangGrad)"/></g></svg>`;
 
@@ -509,18 +485,15 @@ async function satFx(act, def, onBite, onDrain) {
  const top = mk(SAT_JAW_TOP, -100, -130, 200, 120, "50% 0%");
  const bot = mk(SAT_JAW_BOT, -90, 25, 180, 100, "50% 100%");
  document.body.appendChild(wrap);
- // кривава віньєтка позаду жертви
  const vig = document.createElement("div");
  vig.style.cssText = `position:fixed;inset:0;z-index:55;pointer-events:none;opacity:0;background:radial-gradient(circle at ${cx}px ${cy}px, rgba(136,19,55,0) 0, rgba(76,5,25,.35) 26%, rgba(10,0,4,.8) 75%)`;
  document.body.appendChild(vig);
  if (vig.animate) vig.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 300, fill: "forwards", easing: "ease-out" });
- // 1. Поява з неону (0.30 с): паща розкривається за спиною цілі
  snd("thud");
  await Promise.all([
  an(top, [{ transform: "translateY(-20px) scale(.9)", opacity: 0 }, { transform: "translateY(-55px) scale(1.15)", opacity: .95, filter: "drop-shadow(0 0 14px #ff2a55) drop-shadow(0 0 30px #e11d48) brightness(1.4)" }], 300, { easing: "cubic-bezier(.2,.8,.3,1)" }),
  an(bot, [{ transform: "translateY(20px) scale(.9)", opacity: 0 }, { transform: "translateY(45px) scale(1.15)", opacity: .95, filter: "drop-shadow(0 0 14px #ff2a55) drop-shadow(0 0 30px #e11d48) brightness(1.4)" }], 300, { easing: "cubic-bezier(.2,.8,.3,1)" })
  ]);
- // краплі крові скапують з іклів перед ударом
  [[-56, -75], [58, -75]].forEach(([dx, dy], k) => {
  const dr = document.createElement("div");
  dr.style.cssText = `position:fixed;left:${cx + dx}px;top:${cy + dy}px;width:6px;height:10px;margin:0 0 0 -3px;border-radius:50% 50% 50% 50%/60% 60% 40% 40%;background:#dc2626;box-shadow:0 0 8px #ff2a55;z-index:76;pointer-events:none`;
@@ -528,7 +501,6 @@ async function satFx(act, def, onBite, onDrain) {
  an(dr, [{ transform: "translateY(0)", opacity: 1 }, { transform: "translateY(46px)", opacity: 0 }], 260 + k * 40, { easing: "ease-in" }).then(() => dr.remove());
  });
  await sl(100);
- // 2. Хижий укус (75 мс)
  await Promise.all([
  an(top, [{ transform: "translateY(-55px) scale(1.15)" }, { transform: "translateY(38px) scale(1)" }], 75, { easing: "cubic-bezier(0.9, 0, 0.15, 1)" }),
  an(bot, [{ transform: "translateY(45px) scale(1.15)" }, { transform: "translateY(-42px) scale(1)" }], 75, { easing: "cubic-bezier(0.9, 0, 0.15, 1)" })
@@ -541,7 +513,6 @@ async function satFx(act, def, onBite, onDrain) {
  sparkBurst(cx, cy, ["#dc2626", "#ff2a55", "#fda4af", "#7f1d1d"], 20, 150);
  pop(def, "ВАМПІРИЗМ", "#ff2a55");
  await sl(140);
- // 3. Витягування крові: зуби розчиняються, 3 згустки летять дугою до власника
  const dissolve = [top, bot].map(e => an(e, [{ opacity: .95 }, { opacity: 0, filter: "drop-shadow(0 0 30px #881337) blur(10px)" }], 200, { easing: "ease-in" }));
  if (vig.animate) vig.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 500, fill: "forwards" });
  const orbs = [0, 1, 2].map(k => new Promise(res => {
@@ -581,14 +552,11 @@ async function satFx(act, def, onBite, onDrain) {
  shock(C.x, C.y, "#4ade80", 140);
 }
 
-
-// ===== ХУСКАД: «ЛЮТЬ» — заряд, один удар променем, вибух (сила залежить від шкоди) =====
 async function huskadFx(act, def, strike, dmg) {
  const A = seatC(act), D = seatC(def), pl = $("p" + act), pd = $("p" + def);
- const f = Math.min(1.6, 0.7 + dmg * 0.011); // 20 шкоди ≈ 0.9, 80 шкоди ≈ 1.6
+ const f = Math.min(1.6, 0.7 + dmg * 0.011);
  const fa = (e, fr, o) => e.animate ? e.animate(fr, Object.assign({ fill: "forwards" }, o)).finished.catch(() => {}) : sl(o.duration || 0);
  const mk = css => { const e = document.createElement("div"); e.style.cssText = css; document.body.appendChild(e); return e; };
- // 1. Заряд (0.4 с): плашка пульсує, кільця стягуються до неї
  snd("thud"); setTimeout(() => snd("thud"), 180);
  if (pl && pl.animate) pl.animate([
  { filter: "brightness(1) drop-shadow(0 0 0px #ef4444)" },
@@ -601,12 +569,10 @@ async function huskadFx(act, def, strike, dmg) {
  fa(r, [{ transform: "scale(2.1)", opacity: 0 }, { transform: "scale(1.5)", opacity: .9, offset: .4 }, { transform: "scale(.55)", opacity: 0 }], { duration: 300, easing: "ease-in" }).then(() => r.remove());
  }, t));
  await sl(400);
- // 2. Удар: один прямий багряний промінь від власника до цілі
  const dx = D.x - A.x, dy = D.y - A.y, len = Math.hypot(dx, dy), ang = Math.atan2(dy, dx) * 180 / Math.PI, th = 8 + 8 * f;
  const beam = mk(`position:fixed;left:${A.x}px;top:${A.y - th / 2}px;width:${len}px;height:${th}px;transform-origin:0 50%;transform:rotate(${ang}deg) scaleX(0);z-index:72;pointer-events:none;border-radius:${th}px;background:linear-gradient(90deg,rgba(239,68,68,0),#ef4444 30%,#fff1f1);box-shadow:0 0 18px #ef4444,0 0 36px #dc2626`);
  snd("whoosh");
  await fa(beam, [{ transform: `rotate(${ang}deg) scaleX(0)` }, { transform: `rotate(${ang}deg) scaleX(1)` }], { duration: 130, easing: "cubic-bezier(.9,0,1,1)" });
- // 3. Влучання
  strike();
  snd("shatter"); snd("slice");
  shock(D.x, D.y, "#ef4444", Math.round(130 * f));
@@ -619,65 +585,29 @@ async function huskadFx(act, def, strike, dmg) {
  await sl(120);
 }
 
-// ===== НОВІ КАРТИ: Ікло Фафніра (j), Кайдани Фантома (l), Мімікрія (c) =====
-// Ікло Фафніра (j): анатомічне вигнуте драконяче ікло з кістяною емаллю, коренем у лусці та краплею отрути
 SVG_IC.j = `<svg viewBox="0 0 36 36"><defs><linearGradient id="fangBody" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fef3c7"/><stop offset=".45" stop-color="#d6d3d1"/><stop offset=".8" stop-color="#57534e"/><stop offset="1" stop-color="#1c1917"/></linearGradient><linearGradient id="fangRoot" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#581c87"/><stop offset="1" stop-color="#1e1b4b"/></linearGradient><linearGradient id="fangVenom" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fde047"/><stop offset=".5" stop-color="#a855f7"/><stop offset="1" stop-color="#ec4899"/></linearGradient></defs><path d="M5 8C7 4 13 3 17 6L10 15C6 13 4 10 5 8Z" fill="url(#fangRoot)" stroke="#c084fc" stroke-width="1"/><path d="M8 10L13 7M6.5 13L11.5 10" stroke="#e9d5ff" stroke-width=".9" stroke-linecap="round"/><path d="M16 5.5C25 10 30.5 19 31 32C22 26.5 14 19.5 9.5 14Z" fill="url(#fangBody)" stroke="#f5f5f4" stroke-width="1.1" stroke-linejoin="round"/><path d="M14 9.5C21 13.5 26.5 21 28.5 29.5" stroke="#ffffff" stroke-width="1.3" fill="none" stroke-linecap="round" opacity=".85"/><path class="ic-pulse" d="M13 12.5C19 16.5 24 22.5 26.5 28" stroke="url(#fangVenom)" stroke-width="1.6" fill="none" stroke-linecap="round"/><path class="ic-drip" d="M31 32C32.4 33.8 32.8 34.6 31 35.5C29.2 34.6 29.6 33.8 31 32Z" fill="#a855f7" stroke="#f0abfc" stroke-width=".7"/></svg>`;
-
-// Кайдани Фантома (l): прозорий неоново-бірюзовий замок і примарні кайдани
 SVG_IC.l = `<svg viewBox="0 0 36 36"><defs><linearGradient id="cyLock" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ccfbf1" stop-opacity=".85"/><stop offset=".5" stop-color="#14b8a6" stop-opacity=".55"/><stop offset="1" stop-color="#0f766e" stop-opacity=".85"/></linearGradient></defs><g class="ic-pulse" stroke="#5eead4" stroke-width="1.8" fill="none" stroke-linecap="round"><path d="M2 7l9 7M34 7l-9 7M2 29l9-7M34 29l-9-7" stroke-dasharray="3 2"/></g><path d="M12.5 15v-4a5.5 5.5 0 0 1 11 0v4" fill="none" stroke="#99f6e4" stroke-width="2.4" stroke-linecap="round"/><rect x="9" y="15" width="18" height="14.5" rx="3.5" fill="url(#cyLock)" stroke="#5eead4" stroke-width="1.5"/><g class="ic-pulse"><circle cx="18" cy="20.5" r="2.1" fill="#042f2e" stroke="#99f6e4" stroke-width="1"/><path d="M17 22h2l.6 4.2h-3.2z" fill="#042f2e" stroke="#99f6e4" stroke-width=".8"/></g></svg>`;
-
-// Хвиля прибою (H): закручена сапфірова морська хвиля з білою піною
 SVG_IC.H = `<svg class="ic-wave" viewBox="0 0 36 36"><defs><linearGradient id="wvG" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#38bdf8"/><stop offset=".5" stop-color="#0284c7"/><stop offset="1" stop-color="#1e3a8a"/></linearGradient></defs><path d="M3 26C7 22 10 15 17 11C23 7.5 29 9 30 14C31 18 27 20 24 18C21 16 22 12.5 25 12C21 11 16 14 15 19C14 23 18 26 24 25C28 24.5 31 22 33 19L33 30C24 33 11 33 3 30Z" fill="url(#wvG)" stroke="#bae6fd" stroke-width="1.1" stroke-linejoin="round"/><path d="M16 10.5C21 7 28 8 30 13M11 16C13 13 16 11 20 10.5" stroke="#fff" stroke-width="1.6" fill="none" stroke-linecap="round"/><g class="ic-spark" fill="#fff"><circle cx="29" cy="8" r="1.5"/><circle cx="32.5" cy="11.5" r="1.2"/><circle cx="25" cy="6.5" r="1"/><circle cx="8" cy="21" r="1.3"/></g></svg>`;
-
-// Праща Давида (D): шкіряна праща із затиснутим круглим річковим каменем
 SVG_IC.D = `<svg viewBox="0 0 36 36"><defs><radialGradient id="slRock" cx=".38" cy=".35" r=".7"><stop offset="0" stop-color="#e2e8f0"/><stop offset=".5" stop-color="#94a3b8"/><stop offset="1" stop-color="#334155"/></radialGradient><linearGradient id="slLth" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#d97706"/><stop offset="1" stop-color="#78350f"/></linearGradient></defs><path d="M6 31C10 23 13 17 16 13M30 31C26 23 23 17 20 13" stroke="#92400e" stroke-width="2.2" fill="none" stroke-linecap="round"/><g class="ic-float"><path d="M11 16C14 21 22 21 25 16C23 22 13 22 11 16Z" fill="url(#slLth)" stroke="#fde68a" stroke-width=".9"/><circle cx="18" cy="12.5" r="6.2" fill="url(#slRock)" stroke="#f8fafc" stroke-width="1"/><path d="M15.5 10.5C16.5 9.5 18 9.2 19.5 9.8" stroke="#fff" stroke-width="1.1" fill="none" stroke-linecap="round" opacity=".8"/></g><g class="ic-spark" stroke="#fbbf24" stroke-width="1.2" stroke-linecap="round"><path d="M7 9l3 1.5M29 9l-3 1.5M18 3v2.5"/></g></svg>`;
-
-// Смола Аїда (A): чорна в'язка крапля смоли з фіолетовим димом
 SVG_IC.A = `<svg viewBox="0 0 36 36"><defs><radialGradient id="tarG" cx=".35" cy=".35" r=".75"><stop offset="0" stop-color="#52525b"/><stop offset=".45" stop-color="#18181b"/><stop offset="1" stop-color="#09090b"/></radialGradient></defs><g class="ic-smoke" fill="none" stroke="#c084fc" stroke-width="1.5" stroke-linecap="round" opacity=".85"><path d="M11 11C9 8 13 6 11 3"/><path d="M25 12C27 9 23 6 25 3"/><path d="M18 8C16 5 20 3 18 1"/></g><path d="M18 6C13 13 8 18 8 24.5A10 10 0 0 0 28 24.5C28 18 23 13 18 6Z" fill="url(#tarG)" stroke="#a855f7" stroke-width="1.4" stroke-linejoin="round"/><path d="M13 21C12 24 13.5 27 16 28" stroke="#e9d5ff" stroke-width="1.4" fill="none" stroke-linecap="round" opacity=".75"/><circle class="ic-pulse" cx="22" cy="25" r="1.4" fill="#c084fc" opacity=".8"/></svg>`;
-
-// Лезо Хаоса (C): розколотий обсидіановий клинок із трьох нестабільних уламків та фіолетовою енергією
 SVG_IC.C = `<svg class="chaos-svg" viewBox="0 0 36 36"><defs><linearGradient id="blade_chaos" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#e9d5ff"/><stop offset="30%" stop-color="#4c1d95"/><stop offset="70%" stop-color="#1e1b4b"/><stop offset="100%" stop-color="#09090b"/></linearGradient><radialGradient id="core_chaos" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#e9d5ff" stop-opacity="0.95"/><stop offset="55%" stop-color="#9461c9" stop-opacity="0.65"/><stop offset="100%" stop-color="#2e1065" stop-opacity="0"/></radialGradient></defs><circle cx="18" cy="18" r="14" fill="url(#core_chaos)"/><g class="ch-top"><polygon points="28,4 21,9 24,14 29,11" fill="url(#blade_chaos)" stroke="#e9d5ff" stroke-width="0.9" stroke-linejoin="round"/><line x1="27.5" y1="5" x2="23" y2="11" stroke="#f8fafc" stroke-width="0.8" opacity="0.85"/></g><g class="ch-mid"><polygon points="20,11 13,17 16,22 23,16" fill="url(#blade_chaos)" stroke="#9461c9" stroke-width="1" stroke-linejoin="round"/><line x1="19.5" y1="12" x2="14.5" y2="18.5" stroke="#e9d5ff" stroke-width="0.8" opacity="0.8"/></g><g class="ch-bot"><polygon points="12,19 7,25 10,27 14,23" fill="url(#blade_chaos)" stroke="#9461c9" stroke-width="0.9" stroke-linejoin="round"/><path d="M5,24 L13,31 M7.5,27.5 L4,31" stroke="#9461c9" stroke-width="2" stroke-linecap="round"/><circle cx="4" cy="31" r="1.5" fill="#e9d5ff"/></g><g class="ch-arc" fill="none" stroke="#e9d5ff" stroke-width="1.1" stroke-linecap="round"><path d="M19,9 L21,12 L18,14"/><path d="M13,16 L15,19 L12,21"/><circle cx="25" cy="15" r="0.9" fill="#e9d5ff" stroke="none"/><circle cx="11" cy="14" r="0.8" fill="#9461c9" stroke="none"/><circle cx="22" cy="22" r="0.8" fill="#e9d5ff" stroke="none"/></g></svg>`;
-
-// Камінь Сизифа (S): грубий круглий валун з тріщинами, стрілка вгору та перекреслений схил
 SVG_IC.S = `<svg class="sisyphus-svg" viewBox="0 0 36 36"><defs><radialGradient id="sis_rock_g" cx="38%" cy="35%" r="65%"><stop offset="0%" stop-color="#94a3b8"/><stop offset="55%" stop-color="#475569"/><stop offset="100%" stop-color="#1e293b"/></radialGradient></defs><line x1="4" y1="31" x2="32" y2="19" stroke="#64748b" stroke-width="2" stroke-linecap="round"/><line x1="15" y1="22" x2="21" y2="29" stroke="#ef4444" stroke-width="2" stroke-linecap="round"/><path d="M11 11V4M8 7l3-3 3 3" fill="none" stroke="#4ade80" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><g class="sis-rock"><circle cx="19" cy="17" r="9.5" fill="url(#sis_rock_g)" stroke="#cbd5e1" stroke-width="1.2"/><path d="M14 13l4 3-2 4M22 12l-2 4 3 3" fill="none" stroke="#0f172a" stroke-width="1.2" stroke-linecap="round"/></g></svg>`;
-
-// Жало Скорпіона (P): вигнутий хвіст із жалом та зеленою краплею отрути
 SVG_IC.P = `<svg class="scorp-svg" viewBox="0 0 36 36"><defs><linearGradient id="scorp_g" x1="0" y1="1" x2="1" y2="0"><stop offset="0%" stop-color="#1e3a8a"/><stop offset="55%" stop-color="#3b82f6"/><stop offset="100%" stop-color="#93c5fd"/></linearGradient></defs><g class="sc-tail"><path d="M8 31C5 25 6 16 12 11C17 7 24 7 27 11C29 14 27 18 23 17C20 16 20 13 22 12" fill="none" stroke="url(#scorp_g)" stroke-width="4.5" stroke-linecap="round"/><path d="M22 12L28 8L24 15Z" fill="#e0f2fe" stroke="#38bdf8" stroke-width="0.8"/></g><circle class="sc-drop" cx="28" cy="13" r="2" fill="#4ade80"/></svg>`;
-
-// Фіал Асклепія (F): скляний фіал із обвитою змією та світло-зеленою рідиною
 SVG_IC.F = `<svg class="asclep-svg" viewBox="0 0 36 36"><defs><linearGradient id="asc_liq" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#86efac"/><stop offset="100%" stop-color="#16a34a"/></linearGradient></defs><rect x="14" y="4" width="8" height="4" rx="1.5" fill="#d97706" stroke="#fde68a" stroke-width="0.8"/><path d="M13 8h10l3 8v12a5 5 0 0 1-5 5h-6a5 5 0 0 1-5-5V16l3-8z" fill="rgba(186,230,253,0.18)" stroke="#bae6fd" stroke-width="1.4"/><path d="M11 20h14v8a4 4 0 0 1-4 4h-6a4 4 0 0 1-4-4v-8z" fill="url(#asc_liq)"/><path class="asc-snake" d="M10 27C7 24 29 22 25 18C21 15 10 14 14 10" fill="none" stroke="#fde047" stroke-width="2" stroke-linecap="round"/><circle cx="14" cy="10" r="1.6" fill="#fde047"/></svg>`;
-
-// Панцир Черепахи (T): овальний панцир із шестикутними пластинами
 SVG_IC.T = `<svg class="turtle-svg" viewBox="0 0 36 36"><defs><radialGradient id="turt_g" cx="45%" cy="40%" r="60%"><stop offset="0%" stop-color="#38bdf8"/><stop offset="65%" stop-color="#0369a1"/><stop offset="100%" stop-color="#0c4a6e"/></radialGradient></defs><ellipse cx="18" cy="18" rx="12.5" ry="14.5" fill="url(#turt_g)" stroke="#bae6fd" stroke-width="1.6"/><polygon points="18,10.5 23.5,13.8 23.5,20.2 18,23.5 12.5,20.2 12.5,13.8" fill="none" stroke="#e0f2fe" stroke-width="1.2"/><path d="M18 3.5v7M18 23.5v9M6.5 13l6 2M29.5 13l-6 2M6.5 23l6-2M29.5 23l-6-2" stroke="#bae6fd" stroke-width="1.1"/></svg>`;
-
-// Батіг Фурії (W): батіг із трьома хвостами та іскрами
 SVG_IC.W = `<svg class="fury-svg" viewBox="0 0 36 36"><rect x="5" y="25" width="4" height="8" rx="1.5" transform="rotate(35 7 29)" fill="#78350f" stroke="#fbbf24" stroke-width="0.8"/><g class="fur-whip" fill="none" stroke-linecap="round"><path d="M9 25C14 16 11 9 21 5" stroke="#c084fc" stroke-width="2.2"/><path d="M10 26C19 20 18 12 29 10" stroke="#9461c9" stroke-width="2.2"/><path d="M11 27C21 25 23 19 32 18" stroke="#7e22ce" stroke-width="2.2"/><circle class="fur-tip" cx="21" cy="5" r="1.8" fill="#fde047"/><circle class="fur-tip" cx="29" cy="10" r="1.8" fill="#fde047"/><circle class="fur-tip" cx="32" cy="18" r="1.8" fill="#fde047"/></g></svg>`;
-
-// Колісниця Геліоса (G): колісниця з двома колесами і сонячним диском з променями
 SVG_IC.G = `<svg class="helios-svg" viewBox="0 0 36 36"><defs><radialGradient id="hel_sun" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#fef08a"/><stop offset="65%" stop-color="#f97316"/><stop offset="100%" stop-color="#dc2626"/></radialGradient></defs><circle cx="18" cy="11" r="6" fill="url(#hel_sun)" stroke="#fffbeb" stroke-width="1"/><g stroke="#fde047" stroke-width="1.4" stroke-linecap="round"><line x1="18" y1="2" x2="18" y2="4"/><line x1="10" y1="5" x2="12" y2="7"/><line x1="26" y1="5" x2="24" y2="7"/><line x1="8" y1="11" x2="10" y2="11"/><line x1="28" y1="11" x2="26" y2="11"/></g><path d="M7 18h18l4 7H9z" fill="#b91c1c" stroke="#fbbf24" stroke-width="1.3" stroke-linejoin="round"/><g class="hel-w1"><circle cx="12" cy="28" r="5" fill="#1e293b" stroke="#fbbf24" stroke-width="1.6"/><line x1="12" y1="23" x2="12" y2="33" stroke="#fbbf24" stroke-width="1"/><line x1="7" y1="28" x2="17" y2="28" stroke="#fbbf24" stroke-width="1"/></g><g class="hel-w2"><circle cx="24" cy="28" r="5" fill="#1e293b" stroke="#fbbf24" stroke-width="1.6"/><line x1="24" y1="23" x2="24" y2="33" stroke="#fbbf24" stroke-width="1"/><line x1="19" y1="28" x2="29" y2="28" stroke="#fbbf24" stroke-width="1"/></g></svg>`;
-
-// Спис Ахілла (L): довгий спис із гострим наконечником і бронзовою обробкою
 SVG_IC.L = `<svg class="achilles-svg" viewBox="0 0 36 36"><defs><linearGradient id="ach_tip" x1="0" y1="1" x2="1" y2="0"><stop offset="0%" stop-color="#b45309"/><stop offset="50%" stop-color="#fbbf24"/><stop offset="100%" stop-color="#ffffff"/></linearGradient></defs><line x1="5" y1="31" x2="24" y2="12" stroke="#78350f" stroke-width="2.6" stroke-linecap="round"/><rect x="20" y="12" width="4" height="4" transform="rotate(45 22 14)" fill="#d97706" stroke="#fef3c7" stroke-width="0.7"/><polygon points="33,3 21,10 26,15" fill="url(#ach_tip)" stroke="#fef08a" stroke-width="0.9" stroke-linejoin="round"/><line class="ach-glint" x1="31" y1="5" x2="24" y2="12" stroke="#ffffff" stroke-width="1.3" stroke-linecap="round"/></svg>`;
-
-// Прокляття Ереба (E): чорна темна воронка з перевернутим серцем усередині
 SVG_IC.E = `<svg class="erebus-svg" viewBox="0 0 36 36"><defs><radialGradient id="ere_bg" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#09090b"/><stop offset="60%" stop-color="#3b0764"/><stop offset="100%" stop-color="#9333ea" stop-opacity="0"/></radialGradient></defs><circle cx="18" cy="18" r="16" fill="url(#ere_bg)"/><g class="ere-vort" fill="none" stroke="#a855f7" stroke-width="1.5" stroke-linecap="round"><path d="M18 4a14 14 0 0 1 14 14"/><path d="M32 18a14 14 0 0 1-14 14"/><path d="M18 32A14 14 0 0 1 4 18"/><path d="M4 18A14 14 0 0 1 18 4" stroke-dasharray="4 3"/></g><g class="ere-heart"><path d="M18 11c-4 3.5-7 6.5-7 10a4 4 0 0 0 7 2.5A4 4 0 0 0 25 21c0-3.5-3-6.5-7-10z" fill="#18181b" stroke="#f43f5e" stroke-width="1.5"/></g></svg>`;
-
-// Чаша Геби (B): золота чаша з краплями та іскрою на дні
 SVG_IC.B = `<svg class="hebe-svg" viewBox="0 0 36 36"><defs><linearGradient id="heb_gold" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#fef08a"/><stop offset="50%" stop-color="#f59e0b"/><stop offset="100%" stop-color="#92400e"/></linearGradient></defs><path d="M9 12h18c0 7-4 11-9 11s-9-4-9-11z" fill="url(#heb_gold)" stroke="#fffbeb" stroke-width="1.2"/><rect x="16.5" y="23" width="3" height="6" fill="#d97706"/><path d="M11 31h14l-2-2H13z" fill="url(#heb_gold)" stroke="#fffbeb" stroke-width="0.8"/><circle cx="18" cy="17" r="2.2" fill="#4ade80"/><circle class="heb-drop" cx="15" cy="7" r="1.4" fill="#86efac"/><circle class="heb-drop" cx="21" cy="5" r="1.2" fill="#fde047"/></svg>`;
-
-// Кров Титана (K): крапля крові з тріщинами і титановим відблиском
 SVG_IC.K = `<svg class="titan-svg" viewBox="0 0 36 36"><defs><radialGradient id="tit_g" cx="38%" cy="38%" r="65%"><stop offset="0%" stop-color="#fca5a5"/><stop offset="45%" stop-color="#dc2626"/><stop offset="100%" stop-color="#450a0a"/></radialGradient></defs><g class="tit-drop"><path d="M18 4C12 13 8 18 8 24a10 10 0 0 0 20 0c0-6-4-11-10-20z" fill="url(#tit_g)" stroke="#fecaca" stroke-width="1.4"/><path d="M14 20l4 3-2 5M21 18l-2 4 3 3" fill="none" stroke="#fef08a" stroke-width="1.1" stroke-linecap="round"/><path d="M13 18c-1 2.5-1 5 0 7" fill="none" stroke="#ffffff" stroke-width="1.4" stroke-linecap="round" opacity="0.8"/></g></svg>`;
-
-// Терези Немезиди (N): класичні терези з золотою та сріблястою чашами
 SVG_IC.N = `<svg class="nemesis-svg" viewBox="0 0 36 36"><rect x="16.8" y="6" width="2.4" height="24" rx="1" fill="#fbbf24"/><path d="M11 32h14l-2-2H13z" fill="#d97706" stroke="#fef3c7" stroke-width="0.8"/><circle cx="18" cy="6" r="2.2" fill="#fffbeb" stroke="#f59e0b" stroke-width="1"/><g class="nem-beam"><line x1="6" y1="11" x2="30" y2="11" stroke="#fde047" stroke-width="2" stroke-linecap="round"/><path d="M6 11L3 20h6zM30 11l-3 9h6z" fill="none" stroke="#cbd5e1" stroke-width="1"/><path d="M2 20h8a4 4 0 0 1-8 0z" fill="#fbbf24" stroke="#fffbeb" stroke-width="0.8"/><path d="M26 20h8a4 4 0 0 1-8 0z" fill="#cbd5e1" stroke="#f8fafc" stroke-width="0.8"/></g></svg>`;
 
-// Анімація «Хвиля прибою» (H) — Варіант 1: Океанічний Вир / Водяний Торнадо (процедурні спіралі + 38 бульбашок без розтягування картинок)
 async function waveSurfFx(act, isTide, onHeal) {
  const C = seatC(act), pl = $("p" + act);
  const W = 152, H = 164;
  const box = document.createElement("div");
  box.style.cssText = `position:fixed;left:${C.x - W / 2}px;top:${C.y - H / 2}px;width:${W}px;height:${H}px;z-index:73;pointer-events:none;filter:drop-shadow(0 0 14px #38bdf8) drop-shadow(0 0 26px #0284c7)`;
- // Генеруємо 4 процедурні спіральні струмені води, які закручуються знизу вгору навколо медальйона
  let streams = "";
  const cols = ["#e0f2fe", "#7dd3fc", "#38bdf8", "#0284c7"];
  for (let s = 0; s < 4; s++) {
@@ -698,7 +628,6 @@ async function waveSurfFx(act, isTide, onHeal) {
  document.body.appendChild(box);
  snd("heal");
 
- // Анімуємо пробіг водяних струменів по спіралі вгору
  const pathAnims = Array.from(box.querySelectorAll(".wv-st")).map(p => {
  const s = +p.dataset.s;
  return p.animate ? p.animate([
@@ -708,7 +637,6 @@ async function waveSurfFx(act, isTide, onHeal) {
  ], { duration: 680, delay: s * 45, easing: "cubic-bezier(.22,.8,.32,1)", fill: "forwards" }).finished.catch(() => {}) : sl(680);
  });
 
- // Одночасно випускаємо густий висхідний потік із бульбашок і морської піни
  const bCount = isTide ? 40 : 28;
  for (let k = 0; k < bCount; k++) {
  const b = document.createElement("div");
@@ -746,7 +674,6 @@ async function waveSurfFx(act, isTide, onHeal) {
  box.remove();
 }
 
-// Анімація «Праща Давида» (D): розкрут пращі та стрімкий постріл каменем
 async function slingShotFx(act, def, isBonus, onHit) {
  const A = seatC(act), D = seatC(def);
  const dx = D.x - A.x, dy = D.y - A.y;
@@ -754,14 +681,12 @@ async function slingShotFx(act, def, isBonus, onHit) {
  slg.style.zIndex = 72;
  slg.style.filter = isBonus ? "drop-shadow(0 0 16px #fbbf24)" : "drop-shadow(0 0 10px #94a3b8)";
  snd("throw");
- // Розкрут пращі на місці
  await an(slg, [
  { transform: "scale(.6) rotate(0deg)", opacity: 0 },
  { transform: "scale(1.1) rotate(360deg)", opacity: 1, offset: .5 },
  { transform: "scale(1.2) rotate(720deg)", opacity: 1 }
  ], 320, { easing: "ease-in" });
  slg.remove();
- // Політ річкового каменя
  const rock = document.createElement("div");
  const sz = isBonus ? 28 : 22;
  rock.style.cssText = `position:fixed;left:${A.x - sz / 2}px;top:${A.y - sz / 2}px;width:${sz}px;height:${sz}px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#f8fafc,#94a3b8 55%,#334155);border:2px solid ${isBonus ? "#fde047" : "#e2e8f0"};box-shadow:0 0 ${isBonus ? 22 : 12}px ${isBonus ? "#fbbf24" : "#94a3b8"};z-index:73;pointer-events:none`;
@@ -781,7 +706,6 @@ async function slingShotFx(act, def, isBonus, onHit) {
  if (isBonus) pop(def, "КРИТ −22!", "#fde047");
 }
 
-// Анімація «Смола Аїда» (A) — Варіант 3: Розрив Обсидіанової Сфери (жива куля рідкої темряви з димовим шлейфом + вибух на 25 чорно-неонових крапель + масляна плівка й осідання плашки)
 async function pitchTarFx(act, def, onHit) {
  const A = seatC(act), D = seatC(def), pd = $("p" + def);
  const dx = D.x - A.x, dy = D.y - A.y;
@@ -789,13 +713,11 @@ async function pitchTarFx(act, def, onHit) {
  const nx = -dy / dist, ny = dx / dist;
  const arc = 55;
 
- // Створюємо живу глянцеву обсидіанову сферу з неоново-фіолетовим ядром
  const orbEl = document.createElement("div");
  orbEl.style.cssText = `position:fixed;left:${A.x - 15}px;top:${A.y - 15}px;width:30px;height:30px;border-radius:50%;z-index:74;pointer-events:none;background:radial-gradient(circle at 32% 30%,#f3e8ff 0%,#c084fc 18%,#3b0764 48%,#09090b 82%);border:1.5px solid #a855f7;box-shadow:0 0 16px #a855f7,0 0 30px #581c87,inset 0 0 8px #e9d5ff`;
  document.body.appendChild(orbEl);
  snd("throw");
 
- // Політ по параболічній дузі з генерацією густого димово-смоляного шлейфу
  const DUR_MS = 380;
  await new Promise(res => {
  let t0 = null, lastP = 0;
@@ -828,7 +750,6 @@ async function pitchTarFx(act, def, onHit) {
  });
  orbEl.remove();
 
- // Імпакт: розрив обсидіанової сфери на 25 чорно-неонових крапель смоли
  snd("poison"); snd("thud");
  onHit();
  shock(D.x, D.y, "#a855f7", 170);
@@ -840,7 +761,7 @@ async function pitchTarFx(act, def, onHit) {
  const ang = (k / 25) * Math.PI * 2 + (Math.random() - 0.5) * 0.25;
  const rad = 35 + Math.random() * 75;
  const tx = Math.cos(ang) * rad;
- const ty = Math.sin(ang) * rad + 28; // гравітаційне просідання крапель вниз
+ const ty = Math.sin(ang) * rad + 28;
  dr.style.cssText = `position:fixed;left:${D.x - w / 2}px;top:${D.y - w / 2}px;width:${w}px;height:${w * 1.35}px;border-radius:50% 50% 50% 50%/60% 60% 40% 40%;pointer-events:none;z-index:75;background:radial-gradient(circle at 35% 30%,#c084fc 0%,#18181b 55%,#09090b 100%);border:1px solid #a855f7;box-shadow:0 0 8px #9333ea`;
  document.body.appendChild(dr);
  an(dr, [
@@ -850,7 +771,6 @@ async function pitchTarFx(act, def, onHit) {
  ], 480 + Math.random() * 240, { easing: "cubic-bezier(.2,.7,.3,1)" }).then(() => dr.remove());
  }
 
- // Масляна темна плівка з фіолетовим контуром і важке осідання медальйона вниз під вагою смоли
  if (pd && pd.animate) {
  pd.animate([
  { transform: "translate(-50%, -50%) translateY(0px) scale(1)", filter: "brightness(1)" },
@@ -863,17 +783,14 @@ async function pitchTarFx(act, def, onHit) {
  await sl(380);
 }
 
-// Мімікрія (c): розколота ртутно-золота маска двійника
 SVG_IC.c = `<svg class="ic-float" viewBox="0 0 36 36"><defs><linearGradient id="mimL" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f8fafc"/><stop offset=".5" stop-color="#94a3b8"/><stop offset="1" stop-color="#334155"/></linearGradient><linearGradient id="mimR" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fef08a"/><stop offset=".55" stop-color="#f59e0b"/><stop offset="1" stop-color="#78350f"/></linearGradient></defs><path d="M18 3C10 3 6 8.5 6 16.5 6 25 11.5 31 18 33V3z" fill="url(#mimL)" stroke="#e2e8f0" stroke-width="1.1"/><path d="M18 3c8 0 12 5.5 12 13.5C30 25 24.5 31 18 33V3z" fill="url(#mimR)" stroke="#fde047" stroke-width="1.1"/><ellipse cx="12.5" cy="15.5" rx="2.8" ry="1.8" fill="#0f172a"/><circle class="ic-pulse" cx="12.5" cy="15.5" r="1" fill="#c084fc"/><ellipse cx="23.5" cy="15.5" rx="2.8" ry="1.8" fill="#0f172a"/><circle class="ic-pulse" cx="23.5" cy="15.5" r="1" fill="#fde047"/><path d="M11 23.5q3.5 3 7 0" stroke="#0f172a" stroke-width="1.5" fill="none" stroke-linecap="round"/><path d="M18 23.5q3.5-2.5 7 0" stroke="#451a03" stroke-width="1.5" fill="none" stroke-linecap="round"/><path class="ic-spark" d="M18 1.5v33" stroke="#fff" stroke-width="1.3" stroke-dasharray="2 1.5"/></svg>`;
 
-// ІКЛО ФАФНІРА (j): стрімкий випад ікла (−18 HP) або подвійний укус драконячих ікол у захисті (−25 HP)
 const FAFNIR_BLADE_SVG = `<svg viewBox="0 0 120 120" style="overflow:visible"><defs><linearGradient id="fbG" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#fffbeb"/><stop offset="40%" stop-color="#e7e5e4"/><stop offset="78%" stop-color="#44403c"/><stop offset="100%" stop-color="#0c0a09"/></linearGradient><linearGradient id="fbV" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#fde047"/><stop offset="50%" stop-color="#c084fc"/><stop offset="100%" stop-color="#e11d48"/></linearGradient></defs><path d="M14 22C20 10 38 8 50 18L28 44C16 38 11 30 14 22Z" fill="#3b0764" stroke="#c084fc" stroke-width="2.5"/><path d="M46 16C78 30 98 60 104 106C70 88 42 64 26 42Z" fill="url(#fbG)" stroke="#ffffff" stroke-width="2.5" stroke-linejoin="round"/><path d="M40 30C64 44 82 68 92 94" stroke="url(#fbV)" stroke-width="4" fill="none" stroke-linecap="round"/><circle cx="104" cy="106" r="4.5" fill="#fde047"/></svg>`;
 
 async function fafnirFx(act, def, isAmbush, onHit) {
  const A = seatC(act), D = seatC(def);
  const dx = D.x - A.x, dy = D.y - A.y;
  if (!isAmbush) {
- // Звичайна атака першим ходом (−18 HP): кидок вигнутого ікла по дузі + діагональний розріз
  const f = fxBox(FAFNIR_BLADE_SVG, 96, A.x, A.y);
  f.style.zIndex = 72;
  f.style.filter = "drop-shadow(0 0 14px #c084fc) drop-shadow(0 4px 8px #000)";
@@ -895,7 +812,6 @@ async function fafnirFx(act, def, isAmbush, onHit) {
  sparkBurst(D.x, D.y, ["#fde047", "#c084fc", "#ffffff"], 18, 100);
  return;
  }
- // ЗАСІДКА В ЗАХИСТІ (−25 HP): два гігантські драконячі ікла змикаються навхрест на цілі
  const vg = document.createElement("div");
  vg.style.cssText = `position:fixed;inset:0;z-index:68;pointer-events:none;opacity:0;background:radial-gradient(circle at ${D.x}px ${D.y}px, rgba(234,179,8,.18) 0, rgba(88,28,135,.38) 38%, rgba(9,5,18,.82) 78%)`;
  document.body.appendChild(vg);
@@ -909,7 +825,6 @@ async function fafnirFx(act, def, isAmbush, onHit) {
  an(f1, [{ transform: "translate(-35px,-40px) scale(.5) rotate(-25deg)", opacity: 0 }, { transform: "translate(0,0) scale(1.15) rotate(8deg)", opacity: 1 }], 220, { easing: "cubic-bezier(.2,1.4,.4,1)" }),
  an(f2, [{ transform: "translate(35px,-40px) scale(-.5,.5) rotate(-25deg)", opacity: 0 }, { transform: "translate(0,0) scale(-1.15,1.15) rotate(8deg)", opacity: 1 }], 220, { easing: "cubic-bezier(.2,1.4,.4,1)" })
  ]);
- // Блискавичне перехресне врізання в аватар
  snd("slice"); setTimeout(() => snd("shatter"), 45);
  await Promise.all([
  an(f1, [{ transform: "translate(0,0) scale(1.15) rotate(8deg)" }, { transform: "translate(62px,72px) scale(1.28) rotate(28deg)" }], 115, { easing: "cubic-bezier(.9,0,.1,1)" }),
@@ -918,7 +833,6 @@ async function fafnirFx(act, def, isAmbush, onHit) {
  onHit();
  crackTable();
  shake($("p" + def));
- // X-подібний золотисто-фіолетовий розріз
  [-38, 38].forEach(ang => {
  const cr = document.createElement("div");
  cr.style.cssText = `position:fixed;left:${D.x - 85}px;top:${D.y - 3}px;width:170px;height:6px;background:linear-gradient(90deg,transparent,#fde047,#f43f5e,#fff,#fde047,transparent);box-shadow:0 0 20px #fde047;z-index:74;pointer-events:none`;
@@ -937,11 +851,9 @@ async function fafnirFx(act, def, isAmbush, onHit) {
  f1.remove(); f2.remove(); vg.remove();
 }
 
-// КАЙДАНИ ФАНТОМА (l): політ бірюзового неонового кайдана + закриття прозорого неонового замка поверх суперника
 async function shackleFx(act, def, onHit) {
  const A = seatC(act), D = seatC(def);
  const dx = D.x - A.x, dy = D.y - A.y, ang = Math.atan2(dy, dx) * 180 / Math.PI;
- // 1. Від того, хто кинув, до суперника простягається прозорий бірюзовий неоновий ланцюг
  const dist = Math.hypot(dx, dy) || 1, ux = dx / dist, uy = dy / dist;
  const sx = A.x + ux * 42, sy = A.y + uy * 42, clen = Math.max(50, dist - 84);
  const nl = Math.max(3, Math.round(clen / 20));
@@ -957,7 +869,6 @@ async function shackleFx(act, def, onHit) {
  snd("whoosh");
  await an(chain, [{ clipPath: "inset(-24px 100% -24px -24px)" }, { clipPath: "inset(-24px -24px -24px -24px)" }], 380, { easing: "cubic-bezier(.3,.7,.3,1)" });
 
- // 2. Влучання: бірюзові неонові ланцюги обплітають плашку, а поверх неї закривається прозорий неоновий замок
  onHit();
  snd("shield");
  const chains = document.createElement("div");
@@ -981,7 +892,6 @@ async function shackleFx(act, def, onHit) {
  an(chains, [{ transform: "scale(1.45)", opacity: 0 }, { transform: "scale(1)", opacity: 1 }], 210, { easing: "ease-out" }),
  an(lock, [{ transform: "scale(1.35)", opacity: 0 }, { transform: "scale(1)", opacity: 0.95 }], 210, { easing: "cubic-bezier(.2,1.4,.4,1)" })
  ]);
- // Клацання замка: дужка різко опускається й замикається
  snd("stun");
  if (shackleArc && shackleArc.animate) {
  await shackleArc.animate([{ transform: "translateY(-18px)" }, { transform: "translateY(0px)" }], { duration: 110, fill: "forwards", easing: "cubic-bezier(.9,0,.1,1)" }).finished.catch(() => {});
@@ -1000,7 +910,6 @@ async function shackleFx(act, def, onHit) {
  chain.remove(); chains.remove(); lock.remove();
 }
 
-// СПАЛЕННЯ КАРТИ ЗДОРОВ'Я БІРЮЗОВИМ ПОЛУМ'ЯМ (коли на гравці висять Кайдани Фантома)
 async function burnHealCardFx(act, c) {
  const slot = T[act] && T[act].e;
  const C = seatC(act);
@@ -1057,7 +966,6 @@ async function burnHealCardFx(act, c) {
  fl.remove();
 }
 
-// МІМІКРІЯ (c): ртутне полум'я перетворює карту на столі на золоту копію ×1.25
 async function mimicMorphFx(act, clonedCard) {
  const slot = T[act] && T[act].e;
  const C = seatC(act);
@@ -1086,16 +994,15 @@ async function mimicMorphFx(act, clonedCard) {
  await sl(260);
 }
 
-// ===== БЛАГОСЛОВЕННЯ РА (карта «n»): сонячний промінь ~1.1 с =====
 SVG_IC.n = `<svg viewBox="0 0 36 36"><defs><radialGradient id="snG" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#fffbeb"/><stop offset=".55" stop-color="#fde047"/><stop offset="1" stop-color="#f59e0b"/></radialGradient></defs><g class="ic-spin" stroke="#fbbf24" stroke-width="2" stroke-linecap="round" style="filter:drop-shadow(0 0 1.5px #f59e0b)"><path d="M18 2v5M18 29v5M2 18h5M29 18h5M6.7 6.7l3.5 3.5M25.8 25.8l3.5 3.5M29.3 6.7l-3.5 3.5M10.2 25.8l-3.5 3.5"/></g><circle class="ic-pulse" cx="18" cy="18" r="8" fill="url(#snG)" stroke="#fef3c7" stroke-width="1.2"/><path d="M14.5 17.5q1.2-1.2 2.4 0M19.1 17.5q1.2-1.2 2.4 0" stroke="#92400e" stroke-width="1" fill="none" stroke-linecap="round"/></svg>`;
 SVG_IC.q = `<svg viewBox="0 0 36 36"><defs><radialGradient id="mdE" cx=".4" cy=".4" r=".65"><stop offset="0" stop-color="#d1fae5"/><stop offset=".55" stop-color="#34d399"/><stop offset="1" stop-color="#064e3b"/></radialGradient></defs><ellipse cx="18" cy="18" rx="15" ry="11" fill="#3f3f46" stroke="#71717a" stroke-width="1.4"/><path d="M5 18c2-3 6-3 8 0M23 18c2-3 6-3 8 0" stroke="#71717a" stroke-width="1" opacity=".6" fill="none"/><ellipse cx="18" cy="18" rx="10" ry="7.2" fill="url(#mdE)" stroke="#022c22" stroke-width="1"/><ellipse class="ic-pupil" cx="18" cy="18" rx="2.1" ry="6.4" fill="#022c22"/><g class="ic-sway" stroke="#4ade80" stroke-width="1.1" fill="none" opacity=".85"><path d="M3 11q4 2 2 7M33 11q-4 2-2 7M4 25q4-1 3-6M32 25q-4-1-3-6"/></g></svg>`;
 SVG_IC.y = `<svg class="ic-chill" viewBox="0 0 36 36"><defs><linearGradient id="icN" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f0f9ff"/><stop offset=".5" stop-color="#7dd3fc"/><stop offset="1" stop-color="#0369a1"/></linearGradient></defs><path d="M18 2L23 13L20 30L18 34L16 30L13 13L18 2Z" fill="url(#icN)" stroke="#e0f2fe" stroke-width="1"/><path d="M18 6v22" stroke="#fff" stroke-width="1" opacity=".55"/><g class="ic-spark"><path d="M9 9l3 3M27 9l-3 3M11 25l2-3M25 25l-2-3" stroke="#bae6fd" stroke-width="1.1" stroke-linecap="round"/></g></svg>`;
+
 async function sunFx(act, onClean, onHeal) {
  const C = seatC(act), cx = C.x, cy = C.y;
  const pl = $("p" + act);
  const mk = css => { const e = document.createElement("div"); e.style.cssText = css; document.body.appendChild(e); return e; };
  const fa = (e, fr, o) => e.animate ? e.animate(fr, Object.assign({ fill: "forwards" }, o)).finished.catch(() => {}) : sl(o.duration);
- // 1. Сонячний стовп (0.45 с)
  const amb = mk("position:fixed;inset:0;z-index:55;pointer-events:none;opacity:0;background:radial-gradient(circle at " + cx + "px " + cy + "px, rgba(253,224,71,.25) 0, rgba(120,53,15,.35) 45%, rgba(30,10,0,.7) 100%)");
  const beamW = 150, beamH = cy + 50;
  const beam = mk(`position:fixed;left:${cx - beamW / 2}px;top:0;width:${beamW}px;height:${beamH}px;z-index:70;pointer-events:none;transform-origin:50% 0;opacity:0;background:linear-gradient(to bottom, rgba(255,255,255,.9), rgba(250,204,21,.65) 60%, transparent);clip-path:polygon(38% 0, 62% 0, 100% 100%, 0 100%);filter:blur(1px) drop-shadow(0 0 18px #fde047)`);
@@ -1106,7 +1013,6 @@ async function sunFx(act, onClean, onHeal) {
  const dust = setInterval(() => sparkBurst(cx + (Math.random() - .5) * 90, cy - 50 + Math.random() * 90, ["#fde047", "#fff7ae", "#fbbf24"], 4, 40), 70);
  await fa(beam, [{ transform: "scaleY(0)", opacity: 0 }, { transform: "scaleY(1)", opacity: 1 }], { duration: 420, easing: "cubic-bezier(.2,.9,.3,1)" });
  if (pl && pl.animate) pl.animate([{ filter: "brightness(1)" }, { filter: "brightness(1.7) saturate(1.2)" }, { filter: "brightness(1.15)" }], { duration: 450 });
- // 2. Спалення дебафів (0.25 с)
  shock(cx, cy, "#facc15", 160); ring(cx, cy, "#fde047", 120);
  const chips = pl ? Array.from(pl.querySelectorAll(".st.pz, .st.bn, .st.fz, .st.wk, .st.ib, .st.hb, .st.sl, .st.rh, .st.ds, .st.sc")) : [];
  chips.forEach(ch => {
@@ -1118,7 +1024,6 @@ async function sunFx(act, onClean, onHeal) {
  pop(act, "ОЧИЩЕННЯ", "#fde047");
  onClean();
  await sl(250);
- // 3. Зцілення +40 HP (0.4 с): стовп згортається в ауру
  clearInterval(dust);
  fa(core, [{ opacity: .95 }, { opacity: 0 }], { duration: 320 });
  fa(amb, [{ opacity: 1 }, { opacity: 0 }], { duration: 400 });
@@ -1129,7 +1034,6 @@ async function sunFx(act, onClean, onHeal) {
  [amb, beam, core].forEach(e => e.remove());
 }
 
-// Постійна аура Шипа рози: сталева лоза строго по контуру .pl-banner-shield без вильоту за межі
 function thornAuraSvg(w, h, uid) {
  const pad = 16, W = w + pad * 2, H = h + pad * 2, cx = W / 2;
  const defs = `<defs><linearGradient id="taS${uid}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#050506"/><stop offset=".3" stop-color="#3f3f46"/><stop offset=".48" stop-color="#b4b4be"/><stop offset=".66" stop-color="#27272a"/><stop offset="1" stop-color="#050506"/></linearGradient></defs>`;
@@ -1209,7 +1113,6 @@ function syncThornAura(i, p, e) {
 }
 
 function turtleShellAuraSvg(uid) {
- // 1-в-1 повторює viewBox="0 0 92 98" і шлях .shield-bg-path без виходу за рамки плашки
  const shieldPath = "M 10,1 H 82 A 9,9 0 0 1 91,10 V 73 L 46,96 L 1,73 V 10 A 9,9 0 0 1 10,1 Z";
  const innerPath = "M 12,4 H 80 A 7,7 0 0 1 88,11 V 71.2 L 46,92.5 L 4,71.2 V 11 A 7,7 0 0 1 12,4 Z";
  return `<svg viewBox="0 0 92 98" preserveAspectRatio="none" style="width:100%;height:100%;display:block;overflow:visible">
@@ -1265,7 +1168,6 @@ function syncShellAura(i, p, e) {
  }
 }
 
-/* ===== GHOST HP, СТАТУСИ, ЕФЕКТИ ЛЬОДУ ТА УДАРІВ ===== */
 function clearGhosts() {
  document.querySelectorAll(".pl .gh, .pl .gt").forEach(x => { x.style.display = "none"; });
  document.querySelectorAll(".pl .hp-ghost-arc").forEach(a => { a.style.opacity = "0"; });
@@ -1295,7 +1197,6 @@ function setGhost(i, amt, kind, label) {
  t.className = "gt" + k; t.textContent = label; t.style.display = "block";
  t.style.left = Math.max(16, Math.min(84, lPct + wPct / 2)) + "%";
 }
-// «привид» втраченого HP у момент удару: яскраво спалахує на місці, де щойно було здоров'я
 function ghostFlash(i, v) {
  const e = $("p" + i); if (!e || !P[i]) return;
  const f = e.querySelector(".gf"); if (!f) return;
@@ -1305,7 +1206,6 @@ function ghostFlash(i, v) {
  f.classList.remove("on"); void f.offsetWidth; f.classList.add("on");
  clearTimeout(f._t); f._t = setTimeout(() => f.classList.remove("on"), 1050);
 }
-// передпоказ: наведення на карту малює привид шкоди/лікування на відповідній смужці
 function previewCard(c) {
  clearGhosts();
  if (!P[0] || !P[0].alive || CU.a < 0 || CU.d < 0) return;
@@ -1392,8 +1292,6 @@ function previewCard(c) {
  }
 }
 
-// ЄДИНИЙ РЕЄСТР СТАТУСІВ: чіткий поділ на ПОЗИТИВНІ (positive) та НЕГАТИВНІ (negative) ефекти
-
 function showStTip(el) {
  const info = statusInfo(+el.dataset.p, el.dataset.k); if (!info) return;
  let t = $("tip");
@@ -1412,19 +1310,18 @@ function showStTip(el) {
  sx.addEventListener("click", e => { const c = hit_(e); if (!c) return; showStTip(c); clearTimeout(tt); tt = setTimeout(hideTip, 3800); });
 })();
 
-// ---- ефекти ударів: шлейф, іскри, ударні хвилі, зірка-вибух, ноти
 function trail(e, col) {
+ if (typeof SETTINGS !== "undefined" && SETTINGS.particles === false) return () => {};
  let on = true, last = 0;
  const step = now => {
  if (!on || !e.isConnected) return;
- if (now - last > 34) {
+ if (now - last > 42) {
  last = now;
- const g = e.cloneNode(true);
- g.style.transform = getComputedStyle(e).transform;
- g.style.opacity = ".5"; g.style.zIndex = 58;
- g.style.filter = `drop-shadow(0 0 10px ${col}) blur(1.2px)`;
+ const r = e.getBoundingClientRect();
+ const g = document.createElement("div");
+ g.style.cssText = `position:fixed;left:${r.left + r.width / 2 - 12}px;top:${r.top + r.height / 2 - 12}px;width:24px;height:24px;border-radius:50%;background:radial-gradient(circle,${col},transparent 70%);opacity:.65;z-index:58;pointer-events:none`;
  document.body.appendChild(g);
- an(g, [{ opacity: .5 }, { opacity: 0 }], 340).then(() => g.remove());
+ an(g, [{ opacity: .65, transform: "scale(1)" }, { opacity: 0, transform: "scale(0.3)" }], 260).then(() => g.remove());
  }
  requestAnimationFrame(step);
  };
@@ -1432,7 +1329,10 @@ function trail(e, col) {
  return () => { on = false; };
 }
 function sparkBurst(x, y, cols, n, spd) {
- for (let k = 0; k < n; k++) {
+ if (typeof SETTINGS !== "undefined" && SETTINGS.particles === false) return;
+ const isPerf = typeof SETTINGS !== "undefined" && SETTINGS.gfx === "perf";
+ const count = isPerf ? Math.max(4, Math.ceil(n * 0.4)) : n;
+ for (let k = 0; k < count; k++) {
  const q = document.createElement("div"), c = cols[k % cols.length];
  const ang = Math.random() * 6.283, v = (spd || 90) * (.45 + Math.random() * .9), L = 9 + Math.random() * 15;
  q.style.cssText = `position:fixed;left:${x}px;top:${y}px;width:${L}px;height:2.6px;margin:-1px 0 0 -${L}px;border-radius:2px;background:linear-gradient(90deg,transparent,${c});box-shadow:0 0 6px ${c};z-index:62;pointer-events:none`;
@@ -1478,7 +1378,6 @@ function notes(x, y, col, n) {
  }
 }
 
-// ---- лід
 function frostShards(x, y, n, spd) {
  const cols = ["#ffffff", "#bae6fd", "#7dd3fc", "#e0f7ff"];
  for (let k = 0; k < n; k++) {
@@ -1526,7 +1425,6 @@ function showTip(c, e) {
  t.style.bottom = (innerHeight - r.top + 14) + "px";
 }
 function hideTip() { const t = $("tip"); if (t) t.style.display = "none"; }
-
 
 function shake(e) {
  if (typeof SETTINGS !== 'undefined' && !SETTINGS.shake) return;
@@ -1614,8 +1512,9 @@ function auraPart(x, y, css, dx, dy, ms) {
 }
 function auraLoop(now) {
  requestAnimationFrame(auraLoop);
- const menu = $("ov") && $("ov").style.display === "flex";
- if (!P || !P.length || menu) { Object.keys(AURA).forEach(auraKill); return; }
+ const inMenu = ($("ov") && $("ov").style.display !== "none") || (typeof isPaused !== "undefined" && isPaused);
+ const anyModal = document.querySelector("#settings-ov.open, #codex-ov.open, #profile-ov.open, #campaign-ov.open, #glory-ov.open");
+ if (!P || !P.length || inMenu || anyModal) { Object.keys(AURA).forEach(auraKill); return; }
  P.forEach((p, i) => {
  const el = $("p" + i);
  const blad = !!(el && p.alive && p.fx && p.fx.some(x => x.blad));
@@ -1630,7 +1529,7 @@ function auraLoop(now) {
  const sr = shEl ? shEl.getBoundingClientRect() : r;
  if (fz && now - (A.tf || 0) > 190) {
  A.tf = now;
- const uX = (Math.random() - 0.5) * 2; // -1..1
+ const uX = (Math.random() - 0.5) * 2;
  const edgeY = sr.bottom - (1 - Math.abs(uX)) * (sr.height * 0.22);
  auraPart(cx + uX * (sr.width * 0.42), edgeY, "width:4px;height:4px;border-radius:50%;background:radial-gradient(circle,#fff,#7dd3fc 60%,transparent);box-shadow:0 0 8px #7dd3fc", (Math.random() - .5) * 8, 16 + Math.random() * 16, 900);
  if (Math.random() < .35) auraPart(sr.left + 8 + Math.random() * (sr.width - 16), sr.top + 8 + Math.random() * (sr.height * 0.72), "width:8px;height:8px;background:#fff;clip-path:polygon(50% 0,60% 40%,100% 50%,60% 60%,50% 100%,40% 60%,0 50%,40% 40%);filter:drop-shadow(0 0 4px #7dd3fc)", 0, -10, 750);
@@ -1638,7 +1537,7 @@ function auraLoop(now) {
  if (slw && now - (A.tsl || 0) > 165) {
  A.tsl = now;
  const dw = 5.5 + Math.random() * 4;
- const uX = (Math.random() - 0.5) * 2; // -1..1 по V-подібному низу щита
+ const uX = (Math.random() - 0.5) * 2;
  const dx0 = cx + uX * (sr.width * 0.42);
  const dy0 = sr.bottom - Math.abs(uX) * (sr.height * 0.22) - 2;
  auraPart(dx0, dy0, `width:${dw}px;height:${dw * 1.45}px;border-radius:50% 50% 50% 50%/65% 65% 35% 35%;background:radial-gradient(circle at 35% 30%,#c084fc 0%,#18181b 55%,#09090b 100%);border:1px solid #a855f7;box-shadow:0 0 8px #9333ea`, (Math.random() - .5) * 5, 22 + Math.random() * 20, 950);
@@ -1946,7 +1845,6 @@ async function reveal(p, c) {
  if (e.animate) await e.animate([{ transform: "scaleX(0)" }, { transform: "scaleX(1)" }], { duration: 160 }).finished;
 }
 
-
 function addFx(i, c, half, casterIdx = -1) {
  const isBasilisk = c.t === "p" && casterIdx >= 0 && typeof hasRelic === "function" && hasRelic(casterIdx, "fang_basilisk");
  const extraDur = isBasilisk ? 1 : 0;
@@ -1961,8 +1859,6 @@ function addFx(i, c, half, casterIdx = -1) {
  upd();
 }
 
-
-// Преферанс: cine-рулетка 1.2 с (0–0.5 запуск, 0.5–0.7 фіксація, 0.7–1.2 розкриття масті)
 function suitFx(S) {
  const idx = SUITS.indexOf(S), d = document.createElement("div");
  d.style.cssText = "position:fixed;inset:0;z-index:72;pointer-events:none;display:flex;align-items:center;justify-content:center;background:radial-gradient(circle,#064e3be6,#020a06f7);border-top:9vh solid #000;border-bottom:9vh solid #000";
@@ -1994,7 +1890,7 @@ function suitFx(S) {
  setTimeout(() => { d.remove(); r(); }, 520);
  }, 700));
 }
-// Піка: чорно-сталевий наконечник пробиває стіл
+
 async function spikeFx(a, d, onHit) {
  const C = seatC(d), e = document.createElement("div");
  e.innerHTML = `<svg viewBox="0 0 40 120"><path d="M20 118L4 30 20 2l16 28z" fill="#1f2937" stroke="#a78bfa" stroke-width="2.5"/><path d="M20 116V6" stroke="#e5e7eb" stroke-width="1.5"/></svg>`;
@@ -2007,7 +1903,7 @@ async function spikeFx(a, d, onHit) {
  if (e.animate) await e.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 260 }).finished.catch(() => {});
  e.remove();
 }
-// Мйольнір: кидок по дузі з обертанням → очищення в польоті → удар і блискавка в один кадр → відскок
+
 async function mjolFx(a, d, onHit) {
  const A0 = seatC(a), D = seatC(d), W = innerWidth, H = innerHeight;
  const bars = document.createElement("div"), h = document.createElement("div"), cl = document.createElement("div");
@@ -2037,7 +1933,6 @@ async function mjolFx(a, d, onHit) {
  };
  requestAnimationFrame(step);
  });
- // ===== ІМПАКТ: усе в одному кадрі =====
  onHit(); snd("thunder");
  const fl = document.createElement("div");
  fl.style.cssText = "position:fixed;inset:0;z-index:75;pointer-events:none;background:radial-gradient(circle,#fff 0,#e0f2fe 40%,#7dd3fc 100%)";
@@ -2059,7 +1954,6 @@ async function mjolFx(a, d, onHit) {
  shock(C.x, C.y, "#ffffff", 150); setTimeout(() => shock(C.x, C.y, "#7dd3fc", 250), 70); setTimeout(() => shock(C.x, C.y, "#38bdf8", 340), 150);
  sparkBurst(C.x, C.y, ["#38bdf8", "#fde047", "#fff"], 34, 140); frostShards(C.x, C.y, 22, 130); starburst(C.x, C.y, "#bae6fd", 150);
  shake($("p" + d));
- // відскок із вагою
  const bx = D.x + (A0.x - D.x) * .25, by = D.y - 110;
  const rb = h.animate ? h.animate([
  { transform: fin, opacity: 1 },
@@ -2073,7 +1967,7 @@ async function mjolFx(a, d, onHit) {
  await an(bars, [{ opacity: 1 }, { opacity: 0 }], 200);
  bars.remove();
 }
-// Шип рози: сталеві лози-змії обвивають аватар знизу вгору, змикаються в кокон, з якого вистрілюють шипи
+
 async function thornFx(i) {
  const pl = $("p" + i);
  const r = pl ? pl.getBoundingClientRect() : { left: 0, top: 0, width: 96, height: 112 };
@@ -2083,7 +1977,6 @@ async function thornFx(i) {
  vg.style.cssText = `position:fixed;inset:0;z-index:61;pointer-events:none;background:radial-gradient(circle at ${C.x}px ${C.y}px,#e11d4833 0,#00000088 38%,#1a0004dd 100%)`;
  s.style.cssText = `position:fixed;left:${r.left - pad}px;top:${r.top - pad}px;width:${W}px;height:${H}px;z-index:62;pointer-events:none;filter:drop-shadow(0 0 12px #e11d48)`;
  const defs = `<defs><linearGradient id="thS" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#050506"/><stop offset=".3" stop-color="#3f3f46"/><stop offset=".48" stop-color="#b4b4be"/><stop offset=".66" stop-color="#27272a"/><stop offset="1" stop-color="#050506"/></linearGradient></defs>`;
- // Ширина щита звужується до вістря в нижніх 24%, повторюючи силует .pl-banner-shield
  const shieldHalfW = (t) => {
   const baseHw = r.width * 0.48;
   if (t < 0.24) return baseHw * (0.14 + 0.86 * (t / 0.24));
@@ -2111,7 +2004,6 @@ async function thornFx(i) {
  s.innerHTML = `<svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">${defs}${body}<g class="sg">${spk}</g></svg>`;
  document.body.append(vg, s); snd("slice");
  if (vg.animate) vg.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 200, fill: "forwards" });
- // лози повзуть знизу вгору, кожна зі своїм запізненням і різким "ривком"
  s.querySelectorAll(".vz").forEach(g => {
  const k = +g.dataset.k;
  g.querySelectorAll("path").forEach(p => {
@@ -2120,10 +2012,8 @@ async function thornFx(i) {
  });
  });
  setTimeout(() => { snd("shield"); burst(i, "#e11d48"); }, 600);
- // кокон стискається
  if (pl && pl.animate) pl.animate([{ transform: "translate(-50%, -50%) scale(1)" }, { transform: "translate(-50%, -50%) scale(.955)", offset: .45 }, { transform: "translate(-50%, -50%) scale(1.03)", offset: .75 }, { transform: "translate(-50%, -50%) scale(1)" }], { duration: 560, delay: 850, easing: "ease-in-out" });
  if (pl && pl.animate) pl.animate([{ filter: "drop-shadow(0 0 0px #e11d48)" }, { filter: "brightness(1.25) drop-shadow(0 0 18px #e11d48)" }, { filter: "drop-shadow(0 0 6px #e11d48)" }], { duration: 900, delay: 850, easing: "ease-out" });
- // шипи різко висуваються
  s.querySelectorAll(".sk").forEach((g, k) => g.animate && g.animate([{ transform: "scale(0)" }, { transform: "scale(1.3)", offset: .6 }, { transform: "scale(1)" }], { duration: 200, delay: 900 + k * 14, fill: "both", easing: "cubic-bezier(.2,.9,.3,1.2)" }));
  const sg = s.querySelector(".sg");
  if (sg && sg.animate) sg.animate([{ filter: "drop-shadow(0 0 2px #e11d48)" }, { filter: "drop-shadow(0 0 12px #fb7185)" }], { duration: 340, delay: 1000, iterations: 4, direction: "alternate" });
@@ -2133,7 +2023,7 @@ async function thornFx(i) {
  an(s, [{ opacity: 1 }, { opacity: 0 }], 420).then(() => s.remove());
  an(vg, [{ opacity: 1 }, { opacity: 0 }], 420).then(() => vg.remove());
 }
-// Контрудар: 3 криваво-сталеві голки + яскравий спалах лози
+
 function needlesFx(f, t) {
  const A = seatC(f), B = seatC(t), ang = Math.atan2(B.y - A.y, B.x - A.x);
  const pf = $("p" + f);
@@ -2152,7 +2042,7 @@ function needlesFx(f, t) {
  setTimeout(() => { burst(t, "#991b1b"); shake($("p" + t)); }, 380);
  return sl(480);
 }
-// Горіння: стиск → вибух (із збереженням центрування translate(-50%, -50%))
+
 async function burnFx(i) {
  const pl = $("p" + i);
  pop(i, "ГОРІННЯ", "#f97316"); snd("thunder");
@@ -2166,7 +2056,7 @@ async function burnFx(i) {
  shock(C.x, C.y, "#ea580c", 200); sparkBurst(C.x, C.y, ["#ea580c", "#fde047", "#7f1d1d"], 26, 100); starburst(C.x, C.y, "#f97316", 110);
  shake(pl);
 }
-// Трефа (Штраф): карта вилітає з руки ворога і розсипається на попіл
+
 function ashFx(i, name) {
  const C = seatC(i), q = document.createElement("div");
  q.style.cssText = `position:fixed;left:${C.x - 22}px;top:${C.y - 30}px;width:44px;height:60px;border-radius:6px;background:linear-gradient(135deg,#065f46,#022c22);border:2px solid #fbbf24;z-index:63;pointer-events:none`;
@@ -2175,9 +2065,11 @@ function ashFx(i, name) {
  setTimeout(() => { sparkBurst(C.x, C.y - 60, ["#9ca3af", "#6b7280", "#374151"], 18, 60); snd("shatter"); }, 600);
  pop(i, "СКИДАННЯ: " + name, "#34d399");
 }
-// палаючі іскри та попіл над тими, хто горить
+
 setInterval(() => {
- if (!P || !P.length) return;
+ if (!P || !P.length || (typeof isPaused !== "undefined" && isPaused)) return;
+ if ($("ov") && $("ov").style.display !== "none") return;
+ if (typeof SETTINGS !== "undefined" && !SETTINGS.particles) return;
  P.forEach((p, i) => {
  if (!p.alive || !p.fx || !p.fx.some(f => f.t === "b")) return;
  const e = $("p" + i); if (!e) return;
@@ -2276,10 +2168,6 @@ async function tickFx() {
  if (unlocked && P[0]) renderHand();
 }
 
-// ===== АНІМАЦІЇ ДЛЯ 11 НОВИХ КАРТ =====
-
-// 1. Камінь Сизифа (S): дуговий політ валуна, удар і 3 пилові хвилі (0.6 с)
-// Подвійний клинок (Y): два швидкі удари поспіль
 async function twinBladeFx(act, def, dmg) {
  const h1 = Math.ceil(dmg / 2), h2 = dmg - h1, sIdx = P[act].tourIdx ?? act;
  if (STAT[sIdx]) { STAT[sIdx].dmg += dmg; STAT[sIdx].big = Math.max(STAT[sIdx].big, dmg); }
@@ -2306,7 +2194,6 @@ async function sisyphusFx(act, def, onHit) {
  await sl(220);
 }
 
-// 2. Жало Скорпіона (P): різкий випад хвоста, зелена хвиля по контуру (0.7 с)
 async function scorpionFx(act, def, onHit) {
  const A = seatC(act), D = seatC(def), dx = D.x - A.x, dy = D.y - A.y;
  const st = fxBox(SVG_IC.P, 76, A.x, A.y);
@@ -2333,7 +2220,6 @@ async function scorpionFx(act, def, onHit) {
  await sl(340);
 }
 
-// 3. Фіал Асклепія (F): виливається світло у картку власника; золотий відблиск при +21 (0.8 с)
 async function asclepiusFx(act, boosted, onHeal) {
  const C = seatC(act), pl = $("p" + act);
  const fl = fxBox(SVG_IC.F, 76, C.x, C.y - 34);
@@ -2360,7 +2246,6 @@ async function asclepiusFx(act, boosted, onHeal) {
  await sl(350);
 }
 
-// 4. Панцир Черепахи (T): формування синього купола-панцира навколо гравця (0.65 с)
 async function turtleFx(act, onHeal) {
  const C = seatC(act);
  const dome = fxBox(turtleShellAuraSvg("fx" + act), 126, C.x, C.y + 8);
@@ -2380,7 +2265,6 @@ async function turtleFx(act, onHeal) {
  await sl(180);
 }
 
-// 5. Батіг Фурії (W): дуговий удар батогом; червоні хвости + «+7» при посиленні (0.7 с)
 async function furyWhipFx(act, def, boosted, onHit) {
  const A = seatC(act), D = seatC(def), dx = D.x - A.x, dy = D.y - A.y;
  const whipHtml = boosted
@@ -2405,7 +2289,6 @@ async function furyWhipFx(act, def, boosted, onHit) {
  await sl(320);
 }
 
-// 6. Колісниця Геліоса (G): таран колісницею + підпал (0.9 с)
 async function heliosChariotFx(act, def, onHit) {
  const A = seatC(act), D = seatC(def), dx = D.x - A.x, dy = D.y - A.y;
  const ch = fxBox(SVG_IC.G, 92, A.x, A.y);
@@ -2427,7 +2310,6 @@ async function heliosChariotFx(act, def, onHit) {
  await sl(440);
 }
 
-// 7. Спис Ахілла (L): прямий кидок; білий наконечник і «КРИТ!» при HP < 50 (0.6 / 0.9 с)
 async function achillesSpearFx(act, def, isCrit, onHit) {
  const A = seatC(act), D = seatC(def), dx = D.x - A.x, dy = D.y - A.y;
  const ang = Math.atan2(dy, dx) * 180 / Math.PI + 45;
@@ -2466,7 +2348,6 @@ async function achillesSpearFx(act, def, isCrit, onHit) {
  }
 }
 
-// 8. Прокляття Ереба (E): фіолетово-чорна хвиля + накладення зворотного зцілення (0.8 с)
 async function erebusCurseFx(act, def, onHit) {
  const A = seatC(act), D = seatC(def), dx = D.x - A.x, dy = D.y - A.y;
  const wv = fxBox(SVG_IC.E, 84, A.x, A.y);
@@ -2485,7 +2366,6 @@ async function erebusCurseFx(act, def, onHit) {
  await sl(380);
 }
 
-// 9. Чаша Геби (B): золоте сяйво виливається на картку власника (0.8 с)
 async function hebeCupFx(act, onHeal) {
  const C = seatC(act);
  const cup = fxBox(SVG_IC.B, 82, C.x, C.y - 36);
@@ -2504,7 +2384,6 @@ async function hebeCupFx(act, onHeal) {
  await sl(350);
 }
 
-// 10. Кров Титана (K): крапля розлітається на краплі до карти атаки в руці + «+8» (0.8 с)
 async function titanBloodFx(act, boostedCardIdx, onHeal) {
  const C = seatC(act);
  const dr = fxBox(SVG_IC.K, 80, C.x, C.y);
@@ -2547,7 +2426,6 @@ async function titanBloodFx(act, boostedCardIdx, onHeal) {
  await sl(440);
 }
 
-// 11. Терези Немезиди (N): спільний шар лінії світла + збіг лічильника HP за 0.8 с (1.0 с)
 async function nemesisScalesFx(act, def, targetHp) {
  const A = seatC(act), D = seatC(def);
  const reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -2556,7 +2434,6 @@ async function nemesisScalesFx(act, def, targetHp) {
  sc.style.filter = "drop-shadow(0 0 22px #fbbf24)";
  snd("swap");
 
- // Окремий шар анімації — лінія світла між картками гравця і суперника
  const lineSvg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
  lineSvg.setAttribute("viewBox", `0 0 ${innerWidth} ${innerHeight}`);
  lineSvg.style.cssText = "position:fixed;inset:0;width:100%;height:100%;z-index:74;pointer-events:none";
@@ -2601,7 +2478,6 @@ async function nemesisScalesFx(act, def, targetHp) {
  lineSvg.remove();
 }
 
-// Ефект «зворотного» числа при Проклятті Ереба (спочатку червоний «−», потім число)
 async function reverseHealImpact(i, dmg) {
  P[i].hp = Math.max(0, P[i].hp - dmg);
  hit(i, dmg);
@@ -2627,7 +2503,6 @@ async function reverseHealImpact(i, dmg) {
  upd();
 }
 
-// Анімація «Лезо Хаоса» (C): рулетка 5→35 (0.8 с), результат із відскоком та розсипанням на 3 уламки
 async function chaosBladeFx(act, def, finalDmg, onHit) {
  const slot = T[act] && T[act].e;
  const D = seatC(def);
@@ -2636,7 +2511,6 @@ async function chaosBladeFx(act, def, finalDmg, onHit) {
  const vEl = slot ? slot.querySelector(".v") : null;
  const svgEl = slot ? slot.querySelector(".chaos-svg") : null;
 
- // 1. Лезо різко зупиняється та збільшується на 10%
  if (svgEl) {
  svgEl.style.animation = "none";
  if (!reduce && svgEl.animate) {
@@ -2646,7 +2520,6 @@ async function chaosBladeFx(act, def, finalDmg, onHit) {
  }
  }
 
- // 2. Крутіння числа 5→35 (0.8 с) або миттєвий показ при prefers-reduced-motion
  if (!reduce && vEl) {
  snd("swap");
  const t0 = performance.now(), spinMs = 800;
@@ -2661,7 +2534,6 @@ async function chaosBladeFx(act, def, finalDmg, onHit) {
  });
  }
 
- // 3. Фіксація фінального числа з невеликим відскоком
  if (vEl) {
  vEl.textContent = "−" + finalDmg;
  vEl.style.color = isCrit ? "#fde047" : isWeak ? "#94a3b8" : "#e9d5ff";
@@ -2675,14 +2547,12 @@ async function chaosBladeFx(act, def, finalDmg, onHit) {
  }
  }
 
- // 4. Снаряд та результат удару (5–10 промах, 11–29 звичайний фіолетовий, 30–35 крит)
  const orbCol = isCrit ? "#fbbf24" : isWeak ? "#94a3b8" : "#9461c9";
  strikeArrow(act, def, orbCol);
  if (!reduce) await orb(act, def, orbCol);
  onHit();
 
  if (isWeak) {
- // 5–10: сірий спалах, карта трясеться, напис «Промах»
  snd("stun");
  if (slot && !reduce) shake(slot);
  shock(D.x, D.y, "#94a3b8", 110);
@@ -2694,7 +2564,6 @@ async function chaosBladeFx(act, def, finalDmg, onHit) {
  ], { duration: 350 });
  }
  } else if (isCrit) {
- // 30–35: золотий спалах по краях рамки, струс екрана 0.3 с, напис «КРИТ!»
  snd("thunder"); snd("shatter");
  shock(D.x, D.y, "#fbbf24", 210);
  starburst(D.x, D.y, "#fde047", 150);
@@ -2720,7 +2589,6 @@ async function chaosBladeFx(act, def, finalDmg, onHit) {
  });
  }
  } else {
- // 11–29: стандартний фіолетовий спалах
  shock(D.x, D.y, "#9461c9", 150);
  sparkBurst(D.x, D.y, ["#e9d5ff", "#9461c9", "#2e1065"], 18, 105);
  if (!reduce && $("fl").animate) {
@@ -2731,7 +2599,6 @@ async function chaosBladeFx(act, def, finalDmg, onHit) {
  }
  }
 
- // 5. Після удару карта розсипається на 3 уламки, що розлітаються і зникають
  if (slot && slot.isConnected) {
  const r = slot.getBoundingClientRect();
  slot.style.opacity = "0";
@@ -2761,10 +2628,6 @@ async function chaosBladeFx(act, def, finalDmg, onHit) {
  }
 }
 
-
-// ===== НОВІ КІНЕМАТОГРАФІЧНІ АНІМАЦІЇ ДЛЯ СТАРИХ КАРТ =====
-
-// 1. ТРИЗУБ (d, r === 2): водяний вихор із золотим тризубом Посейдона
 async function tridentVortexFx(act, def, onHit) {
  const A = seatC(act), D = seatC(def);
  const dx = D.x - A.x, dy = D.y - A.y;
@@ -2784,7 +2647,6 @@ async function tridentVortexFx(act, def, onHit) {
  snd("heal"); snd("hit", 25);
  shake($("p" + def));
 
- // Тришаровий водяний вихор навколо цілі
  const vx = document.createElement("div");
  vx.style.cssText = `position:fixed;left:${D.x - 95}px;top:${D.y - 95}px;width:190px;height:190px;z-index:73;pointer-events:none;filter:drop-shadow(0 0 16px #38bdf8)`;
  vx.innerHTML = `<svg viewBox="0 0 190 190" width="190" height="190" style="overflow:visible">
@@ -2812,7 +2674,6 @@ async function tridentVortexFx(act, def, onHit) {
  tr.remove();
 }
 
-// 2. МЕЧ ТИТАНА (d, r === 4): падіння велетенського золотого клинка зверху з розломом столу
 async function titanSwordFx(act, def, onHit) {
  const D = seatC(def);
  const vg = document.createElement("div");
@@ -2827,7 +2688,6 @@ async function titanSwordFx(act, def, onHit) {
  <stop offset="100%" stop-color="#f59e0b"/>
  </linearGradient>
  </defs>
- <!-- Руків'я вгорі, вістря спрямоване вертикально вниз -->
  <circle cx="50" cy="14" r="8" fill="#fbbf24" stroke="#fef3c7" stroke-width="2"/>
  <rect x="44" y="20" width="12" height="32" rx="3" fill="#78350f" stroke="#fbbf24" stroke-width="1.5"/>
  <path d="M22 52 L50 60 L78 52 L82 64 L50 68 L18 64 Z" fill="#fbbf24" stroke="#fffbeb" stroke-width="1.8"/>
@@ -2839,7 +2699,6 @@ async function titanSwordFx(act, def, onHit) {
  snd("whoosh");
  an(vg, [{ opacity: 0 }, { opacity: 1 }], 220);
 
- // Вертикальне падіння велетенського клинка з неба
  await an(sw, [
  { transform: "translateY(-75vh) scale(0.75)", opacity: 0 },
  { transform: "translateY(0px) scale(1.12)", opacity: 1, offset: 0.78 },
@@ -2868,12 +2727,10 @@ async function titanSwordFx(act, def, onHit) {
  sw.remove(); vg.remove();
 }
 
-// 3. ЩИТ ПЕРСЕЯ (m): фізичне дзеркало на столі з рикошетом снаряда назад у нападника
 async function perseusMirrorFx(att, def, onReflect) {
  const A = seatC(att), D = seatC(def);
  const dx = A.x - D.x, dy = A.y - D.y;
  const len = Math.hypot(dx, dy) || 1, ux = dx / len, uy = dy / len;
- // Позиція дзеркала прямо перед захисником на лінії атаки
  const mx = D.x + ux * 58, my = D.y + uy * 58;
  const ang = Math.atan2(dy, dx) * 180 / Math.PI + 90;
 
@@ -2896,14 +2753,12 @@ async function perseusMirrorFx(att, def, onReflect) {
  document.body.appendChild(mir);
  snd("shield");
 
- // Матеріалізація фізичного дзеркала перед захисником
  await an(mir, [
  { transform: `rotate(${ang}deg) scale(0.2)`, opacity: 0 },
  { transform: `rotate(${ang}deg) scale(1.15)`, opacity: 1, offset: 0.65 },
  { transform: `rotate(${ang}deg) scale(1)`, opacity: 1 }
  ], 240, { easing: "cubic-bezier(.2,1.4,.4,1)" });
 
- // Ворожий снаряд летить від нападника до дзеркала
  const proj = document.createElement("div");
  proj.style.cssText = `position:fixed;left:${A.x - 13}px;top:${A.y - 13}px;width:26px;height:26px;border-radius:50%;background:radial-gradient(circle,#fff,#f43f5e 45%,#881337);box-shadow:0 0 20px #f43f5e;z-index:75;pointer-events:none`;
  document.body.appendChild(proj);
@@ -2912,7 +2767,6 @@ async function perseusMirrorFx(att, def, onReflect) {
  { transform: `translate(${mx - A.x}px,${my - A.y}px) scale(1.25)` }
  ], 220, { easing: "ease-in" });
 
- // Удар об дзеркало — сніп іскор, дзвін кришталю та розворот снаряда!
  snd("shatter");
  shock(mx, my, "#f5d0fe", 150);
  sparkBurst(mx, my, ["#ffffff", "#f5d0fe", "#e879f9", "#fde047"], 26, 125);
@@ -2922,7 +2776,6 @@ async function perseusMirrorFx(att, def, onReflect) {
  { transform: `rotate(${ang}deg) scale(1)` }
  ], 260);
 
- // Рикошет назад у нападника
  proj.style.background = "radial-gradient(circle,#fff,#e879f9 45%,#7e22ce)";
  proj.style.boxShadow = "0 0 24px #e879f9";
  strikeArrow(def, att, "#e879f9");
@@ -2940,13 +2793,11 @@ async function perseusMirrorFx(att, def, onReflect) {
  mir.remove();
 }
 
-// 4. ДИВНА УГОДА (w): вихор карт через центр столу з обміном колод
 async function weirdDealFx(act, def, onSwap) {
  const A = seatC(act), D = seatC(def);
  const st = $("stage").getBoundingClientRect();
  const cx = st.left + st.width / 2, cy = st.top + st.height / 2;
 
- // Містичний портал у центрі столу
  const portal = document.createElement("div");
  portal.style.cssText = `position:fixed;left:${cx - 85}px;top:${cy - 85}px;width:170px;height:170px;border-radius:50%;z-index:72;pointer-events:none;background:radial-gradient(circle,rgba(192,132,252,0.45) 0%,rgba(126,34,206,0.22) 55%,transparent 75%);border:2px dashed #c084fc;box-shadow:0 0 34px #a855f7,inset 0 0 24px #c084fc`;
  document.body.appendChild(portal);
@@ -2988,13 +2839,9 @@ async function weirdDealFx(act, def, onSwap) {
  await Promise.all(cardsAnims);
 }
 
-// Вихор Харибди (7): глибокий фіолетово-індиговий вир із зазубреними зубами по спіралі та сяючим ядром
 SVG_IC["7"] = `<svg viewBox="0 0 36 36"><defs><radialGradient id="chCore" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#ffffff"/><stop offset="28%" stop-color="#e879f9"/><stop offset="65%" stop-color="#6b21a8"/><stop offset="100%" stop-color="#1e1b4b"/></radialGradient></defs><circle cx="18" cy="18" r="15.5" fill="url(#chCore)" stroke="#c084fc" stroke-width="1.3"/><g class="ic-spin" fill="none" stroke-linecap="round"><path d="M18 4a14 14 0 0 1 13.5 10.5A10.5 10.5 0 0 1 21 28a7.5 7.5 0 0 1-7-7.5 4.5 4.5 0 0 1 4.5-4.5" stroke="#e9d5ff" stroke-width="2"/><path d="M18 32A14 14 0 0 1 4.5 21.5 10.5 10.5 0 0 1 15 8a7.5 7.5 0 0 1 7 7.5" stroke="#a855f7" stroke-width="2.2"/><g fill="#f5d0fe" stroke="none"><polygon points="18,3 20,7 16,7"/><polygon points="32,18 28,20 28,16"/><polygon points="18,33 16,29 20,29"/><polygon points="4,18 8,16 8,20"/><polygon points="27,9 23,11 25,13"/><polygon points="9,27 13,25 11,23"/></g></g><circle class="ic-pulse" cx="18" cy="18" r="3.4" fill="#fff"/></svg>`;
-
-// Лоза Діоніса (8): виноградна лоза з темно-фіолетовими гронами та золотим листям, що обвиває кубок
 SVG_IC["8"] = `<svg viewBox="0 0 36 36"><defs><linearGradient id="dioCup" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#fef08a"/><stop offset="55%" stop-color="#d97706"/><stop offset="100%" stop-color="#78350f"/></linearGradient></defs><path d="M10 8h16c0 7-3.5 11.5-8 11.5S10 15 10 8z" fill="url(#dioCup)" stroke="#fffbeb" stroke-width="1.1"/><rect x="16.6" y="19.5" width="2.8" height="8.5" fill="#d97706"/><path d="M11.5 31h13l-2-3h-9z" fill="url(#dioCup)" stroke="#fffbeb" stroke-width="0.8"/><path class="ic-sway" d="M6 28C8 19 14 15 22 13C27 12 30 9 31 6" fill="none" stroke="#4ade80" stroke-width="2.2" stroke-linecap="round"/><path d="M13 11c-3-2-6 0-5 3 2 1 4 0 5-3zM24 9c2-3 5-2 5 1-2 2-4 1-5-1z" fill="#fde047" stroke="#92400e" stroke-width="0.6"/><g class="ic-pulse" fill="#9333ea" stroke="#e9d5ff" stroke-width="0.6"><circle cx="24" cy="16" r="2.4"/><circle cx="28" cy="16" r="2.4"/><circle cx="26" cy="19.5" r="2.4"/><circle cx="23" cy="19.5" r="2.1"/><circle cx="25.5" cy="23" r="2.2"/></g></svg>`;
 
-// Анімація «Вихор Харибди» (7): фіолетова спіральна воронка під плашкою ворога втягує медальйон углиб столу
 async function charybdisFx(act, def, bonusDmg, onHit) {
  try {
   const D = seatC(def), pd = $("p" + def);
@@ -3042,7 +2889,6 @@ async function charybdisFx(act, def, bonusDmg, onHit) {
  }
 }
 
-// Анімація «Лоза Діоніса» (8): зелено-фіолетові пагони винограду обвивають плашку гравця, а хмарка пилку летить до ворога
 async function dionysusVineFx(act, def, onApply) {
  const C = seatC(act), D = seatC(def), pl = $("p" + act);
  const vineBox = document.createElement("div");
@@ -3063,7 +2909,6 @@ async function dionysusVineFx(act, def, onApply) {
   { transform: "scale(1.2) rotate(80deg)", opacity: 0 }
  ], 580, { easing: "ease-out" });
 
- // Хмарка фіолетового пилку летить у бік суперника
  if (P[def] && P[def].alive) {
   orb(act, def, "#c084fc").then(() => {
    sparkBurst(D.x, D.y, ["#e9d5ff", "#c084fc", "#fde047"], 16, 85);
@@ -3085,15 +2930,12 @@ async function dionysusVineFx(act, def, onApply) {
  vineBox.remove();
 }
 
-
-// ===== ДЕСТРОЯР (9): Золотий вихор -> Спис-меч (-35 HP) -> Розкол на уламки (-10 HP іншим) =====
 async function destroyerFx(act, def, otherIds, onMainHit, onSplashHit) {
  try {
   const A = seatC(act), D = seatC(def);
   const dx = D.x - A.x, dy = D.y - A.y;
   const ang = Math.atan2(dy, dx) * 180 / Math.PI;
 
-  // 1. Золотий вихор над кастером і кристалізація масивної золотої стріли-меча
   const vort = document.createElement("div");
   vort.style.cssText = `position:fixed;left:${A.x - 62}px;top:${A.y - 62}px;width:124px;height:124px;z-index:72;pointer-events:none;filter:drop-shadow(0 0 18px #f59e0b)`;
   vort.innerHTML = `<svg viewBox="0 0 120 120" width="124" height="124" style="overflow:visible">
@@ -3116,13 +2958,9 @@ async function destroyerFx(act, def, otherIds, onMainHit, onSplashHit) {
      <stop offset="100%" stop-color="#fffbeb"/>
     </linearGradient>
    </defs>
-   <!-- Хвостове оперення -->
    <polygon points="4,26 24,14 34,26 24,38" fill="#f59e0b" stroke="#fffbeb" stroke-width="1.4"/>
-   <!-- Масивне древко -->
    <rect x="26" y="22.5" width="44" height="7" rx="3" fill="#78350f" stroke="#fde047" stroke-width="1.3"/>
-   <!-- Гарда-хрестовина -->
    <polygon points="66,10 74,18 74,34 66,42 60,26" fill="#fde047" stroke="#fffbeb" stroke-width="1.4"/>
-   <!-- Широке двосічне лезо-стріла -->
    <polygon points="72,14 114,16 138,26 114,36 72,38 78,26" fill="url(#desBladeG)" stroke="#fffbeb" stroke-width="1.8" stroke-linejoin="round"/>
    <line x1="76" y1="26" x2="132" y2="26" stroke="#fffbeb" stroke-width="2.2" opacity="0.95"/>
   </svg>`;
@@ -3142,7 +2980,6 @@ async function destroyerFx(act, def, otherIds, onMainHit, onSplashHit) {
   ]);
   vort.remove();
 
-  // 2. Прямий надшвидкісний удар у плашку основної цілі (−35 HP)
   const stopTrail = trail(spear, "#fde047");
   snd("throw");
   await an(spear, [
@@ -3152,7 +2989,6 @@ async function destroyerFx(act, def, otherIds, onMainHit, onSplashHit) {
   stopTrail();
   spear.remove();
 
-  // Гучний металевий дзвін, золотий вибух, струс плашки та −35 HP
   snd("clang");
   bell();
   onMainHit();
@@ -3169,7 +3005,6 @@ async function destroyerFx(act, def, otherIds, onMainHit, onSplashHit) {
    ], { duration: 420 });
   }
 
-  // 3. Розкол та осколковий залп (−10 HP іншим живим суперникам при 3–4 гравцях)
   if (otherIds && otherIds.length > 0) {
    await sl(150);
    snd("shatter");
@@ -3185,7 +3020,6 @@ async function destroyerFx(act, def, otherIds, onMainHit, onSplashHit) {
     const mx = D.x + sdx * 0.5 + nx * arcDir;
     const my = D.y + sdy * 0.5 + ny * arcDir;
 
-    // 2 гострі золоті уламки на кожного додаткового суперника
     const subAnims = [0, 1].map(k => new Promise(r2 => {
      const sh = document.createElement("div");
      const sz = k === 0 ? 34 : 24;
@@ -3235,7 +3069,6 @@ async function destroyerFx(act, def, otherIds, onMainHit, onSplashHit) {
  }
 }
 
-// ===== РУКА МІДАСА (0): Золота хватка (-30 HP) -> Потік рідкого золота і монет -> Зцілення (+15 HP) =====
 const MIDAS_OPEN_SVG = `<svg viewBox="0 0 120 120" width="136" height="136" style="overflow:visible"><defs><linearGradient id="mPalmO" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#fef08a" stop-opacity="0.92"/><stop offset="50%" stop-color="#facc15" stop-opacity="0.76"/><stop offset="100%" stop-color="#991b1b" stop-opacity="0.82"/></linearGradient></defs><path d="M40 96 C30 88 26 74 28 58 L16 42 C13 38 18 32 23 34 L34 42 L36 16 C37 11 45 11 46 16 L49 38 L55 12 C56 7 64 7 65 12 L67 38 L76 15 C78 10 86 13 84 18 L79 44 L94 28 C98 24 104 29 101 34 L86 64 C82 80 76 92 64 98 C54 102 46 101 40 96 Z" fill="url(#mPalmO)" stroke="#fffbeb" stroke-width="2.4" stroke-linejoin="round"/><circle cx="58" cy="68" r="10" fill="#991b1b" fill-opacity="0.5" stroke="#fef08a" stroke-width="1.8"/><circle cx="58" cy="68" r="4" fill="#fde047"/></svg>`;
 const MIDAS_FIST_SVG = `<svg viewBox="0 0 120 120" width="128" height="128" style="overflow:visible"><defs><linearGradient id="mPalmF" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#fffbeb" stop-opacity="0.95"/><stop offset="45%" stop-color="#facc15" stop-opacity="0.88"/><stop offset="100%" stop-color="#991b1b" stop-opacity="0.92"/></linearGradient></defs><rect x="28" y="34" width="64" height="54" rx="18" fill="url(#mPalmF)" stroke="#fffbeb" stroke-width="2.6"/><path d="M36 36 v22 M52 34 v24 M68 34 v24 M84 36 v22" stroke="#991b1b" stroke-width="2.6" stroke-linecap="round"/><path d="M26 56 C26 48 38 46 50 52 L64 56 C70 58 68 68 60 68 L34 66 Z" fill="#f59e0b" stroke="#fef08a" stroke-width="2"/><circle cx="60" cy="74" r="7" fill="#991b1b" fill-opacity="0.55" stroke="#fef08a" stroke-width="1.6"/></svg>`;
 
@@ -3243,7 +3076,6 @@ async function midasFx(act, def, onHit, onHeal) {
  try {
   const A = seatC(act), D = seatC(def), pd = $("p" + def), pa = $("p" + act);
 
-  // 1. Над плашкою суперника матеріалізується велетенська золота примарна долоня і стискається в кулак
   const hand = document.createElement("div");
   hand.style.cssText = `position:fixed;left:${D.x - 68}px;top:${D.y - 78}px;width:136px;height:136px;z-index:75;pointer-events:none;filter:drop-shadow(0 0 18px #facc15) drop-shadow(0 0 32px #b45309)`;
   hand.innerHTML = MIDAS_OPEN_SVG;
@@ -3255,7 +3087,6 @@ async function midasFx(act, def, onHit, onHeal) {
    { transform: "scale(1.12) translateY(-6px)", opacity: 0.94 }
   ], 250, { easing: "cubic-bezier(.2,.9,.3,1)" });
 
-  // Миттєве стискання в кулак + перетворення плашки ворога на застигле холодне золото
   hand.innerHTML = MIDAS_FIST_SVG;
   snd("clang");
   if (pd) pd.classList.add("midas-gilded");
@@ -3265,10 +3096,8 @@ async function midasFx(act, def, onHit, onHeal) {
    { transform: "scale(0.82)", opacity: 1 }
   ], 130, { easing: "cubic-bezier(.85,0,.2,1)" });
 
-  // Секунда застиглого холодного золота з металевим напруженням
   await sl(520);
 
-  // Розбиття криваво-золотим спалахом на −30 HP
   hand.remove();
   if (pd) pd.classList.remove("midas-gilded");
   snd("shatter");
@@ -3280,7 +3109,6 @@ async function midasFx(act, def, onHit, onHeal) {
   sparkBurst(D.x, D.y, ["#fef08a", "#facc15", "#dc2626", "#991b1b"], 30, 140);
   pop(def, "ЗОЛОТА ХВАТКА!", "#facc15");
 
-  // 2. Потік рідкого золота та сяючих золотих монет по плавній дузі в плашку кастера
   const sdx = A.x - D.x, sdy = A.y - D.y;
   const dist = Math.hypot(sdx, sdy) || 1;
   const nx = -sdy / dist, ny = sdx / dist;
@@ -3325,7 +3153,6 @@ async function midasFx(act, def, onHit, onHeal) {
 
   await Promise.all(streamAnims);
 
-  // 3. Зцілення власника: тепле золотисто-смарагдове сяйво та дзвін монет (+15 HP)
   snd("coins");
   snd("heal");
   onHeal();
@@ -3347,12 +3174,6 @@ async function midasFx(act, def, onHit, onHeal) {
  }
 }
 
-
-// ============================================================================
-// DCARD V62 — АНІМАЦІЇ ДЛЯ НОВИХ АНТИЧНО-МІФОЛОГІЧНИХ КАРТ АТАКИ (ζ..ω)
-// ============================================================================
-
-// 1. «Клинок Борея» (ζ): швидкий дуговий розріз із блакитним шлейфом; при бонусі крижинки та «−21 (МОРОЗ)»
 async function boreasBladeFx(act, def, isBonus, finalDmg, onHit) {
  try {
   const A = seatC(act), D = seatC(def);
@@ -3396,7 +3217,6 @@ async function boreasBladeFx(act, def, isBonus, finalDmg, onHit) {
  }
 }
 
-// 2. «Стріла Аполлона» (η): стрімкий прямий політ золото-бірюзової стріли зі світловим слідом
 async function apolloArrowFx(act, def, ignoredDebuff, onHit) {
  try {
   const A = seatC(act), D = seatC(def);
@@ -3441,7 +3261,6 @@ async function apolloArrowFx(act, def, ignoredDebuff, onHit) {
  }
 }
 
-// 3. «Клеймо Мойр» (θ): фіолетова нитка долі над ціллю, розсікання світловою дугою; при ≤40 HP спалах і «−30 ДОЛЯ»
 async function moiraiBrandFx(act, def, isFatal, finalDmg, onHit) {
  try {
   const D = seatC(def);
@@ -3496,7 +3315,6 @@ async function moiraiBrandFx(act, def, isFatal, finalDmg, onHit) {
  }
 }
 
-// 4. «Вихор Скілли» (ι): фіолетова спіраль із бризками навколо цілі + іконка дезорієнтації
 async function scyllaVortexFx(act, def, onHit) {
  try {
   const D = seatC(def), pd = $("p" + def);
@@ -3542,7 +3360,6 @@ async function scyllaVortexFx(act, def, onHit) {
  }
 }
 
-// 5. «Гнів Ареса» (κ): важкий діагональний розсіч багряним лезом зі струшуванням столу + багряна рамка при ≤50 HP
 async function aresWrathFx(act, def, isEnraged, finalDmg, onHit) {
  try {
   const D = seatC(def);
@@ -3596,7 +3413,6 @@ async function aresWrathFx(act, def, isEnraged, finalDmg, onHit) {
  }
 }
 
-// 6. «Молот Тіфону» (λ): удар базальтовим молотом зверху + тріщини; при дебафі — розбиття статусів та магматичний спалах +12
 async function typhonHammerFx(act, def, willShatter, onHit, onShatter) {
  try {
   const D = seatC(def);
@@ -3639,7 +3455,6 @@ async function typhonHammerFx(act, def, willShatter, onHit, onShatter) {
  }
 }
 
-// 7. «Удар Горгони» (μ): прокол зі сплеском багряно-зелених крапель; частина летить назад до власника з −8 HP
 async function gorgonStrikeFx(act, def, onHit, onRecoil) {
  try {
   const A = seatC(act), D = seatC(def);
@@ -3688,7 +3503,6 @@ async function gorgonStrikeFx(act, def, onHit, onRecoil) {
  }
 }
 
-// 8. «Кара Вогню» (ν): стрімкий вогняний метеор/спис згори з розльотом іскор та ударною хвилею
 async function fireWrathFx(act, def, isBonus, onHit) {
  try {
   const D = seatC(def);
@@ -3720,7 +3534,6 @@ async function fireWrathFx(act, def, isBonus, onHit) {
  }
 }
 
-// 9. «Длань Зевса» (ξ): затемнення сцени, вертикальний удар золотої блискавки, іскри та розсипання знятих ефектів
 async function zeusHandFx(act, def, isBoosted, strippedColors, onHit) {
  try {
   const D = seatC(def), W = innerWidth, H = innerHeight;
@@ -3790,7 +3603,6 @@ async function zeusHandFx(act, def, isBoosted, strippedColors, onHit) {
  }
 }
 
-// 10. «Кара Харона» (ω): примарний вихор Стіксу, проліт тіні весла та візуальне перетягування карти від цілі до власника
 async function charonWrathFx(act, def, isExec, onHit, onSteal) {
  try {
   const A = seatC(act), D = seatC(def);
@@ -3861,15 +3673,8 @@ async function charonWrathFx(act, def, isExec, onHit, onSteal) {
  }
 }
 
-
-
-// ============================================================================
-// DCARD V63 — АНІМАЦІЇ (VFX & SFX) ДЛЯ 12 АНТИЧНО-МІФОЛОГІЧНИХ КАРТ ЗДОРОВ'Я
-// ============================================================================
-
 const _isReducedMotion = () => !!(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches);
 
-// 4. «Ключ Джерела» (τ): прохолодний блакитний струмінь із бульбашками знизу плашки; при бонусі — сріблясте кільце
 async function springKeyFx(act, isBonus, hv, onHeal) {
  const nodes = [];
  try {
@@ -3930,7 +3735,6 @@ async function springKeyFx(act, isBonus, hv, onHeal) {
  }
 }
 
-// 5. «Крила Зефіра» (υ): два м'які потоки повітря огинають плашку, підіймаючи пір'їнки та блакитні іскри
 async function zephyrWingsFx(act, isBonus, hv, onHeal) {
  const nodes = [];
  try {
@@ -3958,7 +3762,6 @@ async function zephyrWingsFx(act, isBonus, hv, onHeal) {
    ], { duration: 580, delay: idx * 70, easing: "ease-out", fill: "forwards" }).finished.catch(() => {}) : sl(580)
   );
 
-  // Легкі пір'їнки підіймаються вгору
   for (let k = 0; k < (isBonus ? 10 : 6); k++) {
    const f = document.createElement("div");
    f.style.cssText = `position:fixed;left:${C.x + (Math.random() - 0.5) * 84}px;top:${C.y + 34}px;width:16px;height:16px;z-index:74;pointer-events:none;filter:drop-shadow(0 0 6px #7dd3fc)`;
@@ -3992,7 +3795,6 @@ async function zephyrWingsFx(act, isBonus, hv, onHeal) {
  }
 }
 
-// 6. «Дзеркало Нікти» (φ): дзеркальний місячний відблиск по плашці + фіолетова хвиля зцілення
 async function nyxMirrorFx(act, copyBonus, hv, onHeal) {
  const nodes = [];
  try {
@@ -4044,7 +3846,6 @@ async function nyxMirrorFx(act, copyBonus, hv, onHeal) {
  }
 }
 
-// 7. «Іскра Гестії» (χ): теплі фіолетово-золоті іскри підіймаються навколо плашки + статус регенерації
 async function hestiaSparkFx(act, hv, regV, hDur, onApply) {
  const nodes = [];
  try {
@@ -4098,7 +3899,6 @@ async function hestiaSparkFx(act, hv, regV, hDur, onApply) {
  }
 }
 
-// 8. «Квітка Персефони» (ψ): пелюстки розкриваються навколо плашки, змиваючи 1 негативний статус
 async function persephoneFlowerFx(act, willCleanse, onApply) {
  const nodes = [];
  try {
@@ -4152,7 +3952,6 @@ async function persephoneFlowerFx(act, willCleanse, onApply) {
  }
 }
 
-// 9. «Ехо Аркадії» (Γ): два фіолетові звукові кільця з відлунням навколо гравця
 async function arcadiaEchoFx(act, hasEcho, hv, onHeal) {
  const nodes = [];
  try {
@@ -4194,7 +3993,6 @@ async function arcadiaEchoFx(act, hasEcho, hv, onHeal) {
  }
 }
 
-// 10. «Жертовний Кубок» (Δ): рубіновий потік наповнює плашку гравця (+34 HP) + багряна нитка тягнеться до суперника
 async function sacrificialCupFx(act, def, hv, drainDmg, onApply) {
  const nodes = [];
  try {
@@ -4275,7 +4073,6 @@ async function sacrificialTickFx(targetIdx, drainDmg) {
  }
 }
 
-// 11. «Кров Саламандри» (Φ): спалах багряного полум'я омиває гравця, гасить горіння та дає імунітет
 async function salamanderBloodFx(act, wasBurning, hv, onApply) {
  const nodes = [];
  try {
@@ -4319,7 +4116,6 @@ async function salamanderBloodFx(act, wasBurning, hv, onApply) {
  }
 }
 
-// 12. «Дерево Життя» (Ω): кінематографічний акцент, золоті гілки-світлові лінії проростають навколо медальйона
 async function treeOfLifeFx(act, hv, regV, tDur, grantRoot, onApply) {
  const nodes = [];
  try {
@@ -4385,7 +4181,6 @@ async function treeOfLifeFx(act, hv, regV, tDur, grantRoot, onApply) {
  }
 }
 
-// Порятунок від смерті «КОРІННЯ ЖИТТЯ» (пасив Дерева Життя при HP ≤ 0)
 function lifeRootSaveFx(idx) {
  try {
   const C = seatC(idx), pl = $("p" + idx);
@@ -4425,10 +4220,6 @@ function lifeRootSaveFx(idx) {
  }
 }
 
-
-// ===== VFX ДЛЯ 5 НОВИХ СПЕЦКАРТ (V64) =====
-
-// 1. Дзеркало Нарциса (Σ)
 async function narcissusMirrorFx(act, def, stolen, onApply) {
  const a = seatC(act), d = seatC(def);
  const mx = (a.x + d.x) / 2, my = (a.y + d.y) / 2;
@@ -4479,7 +4270,6 @@ async function narcissusMirrorFx(act, def, stolen, onApply) {
  el.remove();
 }
 
-// 2. Кайдани Кроноса (Θ)
 async function kronosChainsFx(act, def, onApply) {
  const d = seatC(def);
  const ringEl = document.createElement("div");
@@ -4504,7 +4294,6 @@ async function kronosChainsFx(act, def, onApply) {
  ringEl.remove();
 }
 
-// 3. Нить Аріадни (Λ)
 async function ariadneThreadFx(act, def, statusType, onApply) {
  const a = seatC(act), d = seatC(def);
  const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
@@ -4535,7 +4324,6 @@ async function ariadneThreadFx(act, def, statusType, onApply) {
  svg.remove();
 }
 
-// 4. Скипетр Аїда (Ψ)
 async function hadesScepterFx(act, def, willRecoilHeal, onStrike, onRecoil) {
  const a = seatC(act), d = seatC(def);
  const mx = (a.x + d.x) / 2, my = (a.y + d.y) / 2 - 22;
@@ -4576,7 +4364,6 @@ async function hadesScepterFx(act, def, willRecoilHeal, onStrike, onRecoil) {
  el.remove();
 }
 
-// 5. Колесо Фортуни (Π)
 async function fortuneWheelFx(act, onApply) {
  const a = seatC(act);
  const el = document.createElement("div");

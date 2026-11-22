@@ -1,6 +1,6 @@
 /* ==========================================================================
-   DCARD V71 — SERVER BROWSER, WAITING LOBBY & MULTIPLAYER ENGINE (Firebase RTDB)
-   Host-Authoritative синхронізація бою з ротацією столу під локального гравця.
+   DCARD V75 — SERVER BROWSER, WAITING LOBBY & MULTIPLAYER ENGINE (Firebase RTDB)
+   Host-Authoritative синхронізація бою з обмеженням вибірки серверів.
    ========================================================================== */
 (function () {
   "use strict";
@@ -26,7 +26,7 @@
     _matchRef: null,
     _matchCb: null,
     _startedMatchId: null,
-    _tab: "browse", // browse | create | lobby
+    _tab: "browse",
     _createMode: 2,
     _createArena: "random",
     _createPrivate: false,
@@ -123,7 +123,7 @@
   function startBrowserListener() {
     stopBrowserListener();
     if (!window.DCARD_FB || !DCARD_FB.ok || !DCARD_FB.db) return;
-    const ref = DCARD_FB.db.ref("rooms");
+    const ref = DCARD_FB.db.ref("rooms").limitToLast(25);
     const cb = (snap) => {
       NET._roomsCache = snap.val() || {};
       if (NET._tab === "browse" && !NET.inLobby) {
@@ -207,7 +207,6 @@
       const maxP = Number(data.meta.maxPlayers) || 2;
       const seats = data.seats || {};
 
-      // Перевірка, чи ми вже в кімнаті
       for (let i = 0; i < maxP; i++) {
         if (seats[i] && seats[i].uid === DCARD_FB.uid) {
           enterLobby(code, i, i === 0);
@@ -215,7 +214,6 @@
         }
       }
 
-      // Пошук вільного місця
       let freeSeat = -1;
       for (let i = 0; i < maxP; i++) {
         if (!seats[i]) { freeSeat = i; break; }
@@ -262,7 +260,6 @@
       }
       NET.roomData = data;
 
-      // Якщо хост запустив бій — синхронно стартуємо на всіх клієнтах!
       if (data.meta.status === "playing" && data.match && data.match.matchId && NET._startedMatchId !== data.match.matchId) {
         NET._startedMatchId = data.match.matchId;
         NET.inLobby = false;
@@ -344,7 +341,6 @@
       return;
     }
 
-    // Визначаємо арену та роздаємо початкові руки на боці хоста
     let chosenArena = (data.meta.arenaId && data.meta.arenaId !== "random")
       ? (ARENAS.find(a => a.id === data.meta.arenaId) || ARENAS[0])
       : ARENAS[Math.floor(Math.random() * ARENAS.length)];
@@ -367,7 +363,6 @@
       };
     });
 
-    // Переіндексуємо mySeat, якщо між слотами були прогалини
     const myIdx = playersPayload.findIndex(p => p.uid === DCARD_FB.uid);
     if (myIdx >= 0) NET.mySeat = myIdx;
 
@@ -386,7 +381,6 @@
     await roomRef.child("meta/status").set("playing");
   }
 
-  // ===== СИНХРОНІЗАЦІЯ ХОДІВ, РАНДОМУ ТА ДОБОРУ КАРТ ПІД ЧАС БОЮ =====
   async function publishMove(turnKey, netSeat, cardIdx, cardObj) {
     if (!NET.active || !NET.roomId) return;
     await DCARD_FB.db.ref(`rooms/${NET.roomId}/match/moves/${turnKey}_${netSeat}`).set({
@@ -415,7 +409,6 @@
           finish(v);
         }
       };
-      // Таймаут безпеки 32 с (якщо опонент відвалився — автохід)
       const timer = setTimeout(() => {
         if (done) return;
         if (NET.isHost && typeof fallbackFn === "function") {
@@ -504,7 +497,6 @@
     NET._startedMatchId = null;
   }
 
-  // ===== UI БРАУЗЕРА СЕРВЕРІВ ТА ЛОБІ =====
   function showNetError(msg) {
     const el = $("net-err-box");
     if (!el) return;
@@ -555,7 +547,7 @@
       if (!r || !r.meta) return false;
       if (r.meta.status !== "waiting") return false;
       if (r.meta.isPrivate) return false;
-      if (now - (r.meta.createdAt || 0) > 1000 * 60 * 60 * 3) return false; // старше 3 год ігноруємо
+      if (now - (r.meta.createdAt || 0) > 1000 * 60 * 60 * 3) return false;
       return true;
     }).sort((a, b) => (b.meta.createdAt || 0) - (a.meta.createdAt || 0));
 
@@ -844,7 +836,6 @@
     }
   }
 
-  // Автоматичне відкриття кімнати за посиланням ?room=XXXX
   window.addEventListener("DOMContentLoaded", () => {
     try {
       const params = new URLSearchParams(location.search);
